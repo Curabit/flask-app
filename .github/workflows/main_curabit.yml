@@ -17,6 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: variable substitution in json
     - uses: microsoft/variable-substitution@v1 
     with:
         files: 'firebase-admin.json'
