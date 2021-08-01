@@ -1,0 +1,78 @@
+:root {
+    --background-color: #FBFBFB;
+    --card-color: #03045e;
+    --primary-accent: #023e8a;
+    --secondary-accent: #00b4d8;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--card-color);
+    font-family: 'Roboto Slab', serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 90vh;
+}
+
+h1 {
+    padding: 0;
+    margin: 0;
+    font-family: 'Lato', sans-serif;
+}
+
+main {
+    width: 50%;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+#buttons {
+    margin: 5px;
+    display: grid;
+    grid-template-columns: 250px 250px;
+}
+
+#buttons button {
+    font-family: 'Roboto Slab', sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: var(--primary-accent);
+    border: none;
+    border-radius: 5px;
+    margin: 10px;
+    height: 50px;
+    color: var(--background-color);
+}
+
+#buttons button:hover {
+    background-color: var(--secondary-accent);
+}
+
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+footer img {
+    width: 10%;
+    margin-bottom: 15px;
+}
+
+@media (max-width: 960px) {
+    #buttons {
+        grid-template-columns: 500px;
+        grid-gap: 10px 10px;
+    }
+}

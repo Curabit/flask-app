@@ -9,15 +9,16 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
+        <link rel="shortcut icon" type="image/ico" href="{{ url_for('static',filename='assets/favicon.png') }}" />
         <link href="{{ url_for('static',filename='css/login.css') }}" rel="stylesheet" type="text/css" />
     </head>
     <body>
         <main>
             <img id='logo' src="{{ url_for('static',filename='assets/logo.svg') }}" alt="Curabit Logo"/>
             <h1>Therapist's Centre</h1>
-            <form id='login_details' action='' method="POST">
-                <label class='form-el' for="uname"><b>Username</b></label>
-                <input class='form-el' type="text" placeholder="Enter Username" name="uname" required>
+            <form id='login_details' action='/api/login' method="POST">
+                <label class='form-el' for="email"><b>Registered Email</b></label>
+                <input class='form-el' type="email" placeholder="Enter Email" name="email" required>
 
                 <label class='form-el' for="psw"><b>Password</b></label>
                 <input class='form-el' type="password" placeholder="Enter Password" name="psw" required>
