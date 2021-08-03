@@ -16,7 +16,13 @@
         <main>
             <img id='logo' src="{{ url_for('static',filename='assets/logo.svg') }}" alt="Curabit Logo"/>
             <h1>Therapist's Centre</h1>
-            <form id='login_details' action='/api/login' method="POST">
+            {% if isError is true %}
+            <div id='error'>
+                <h4>{{ err['headline'] }}</h4>
+                <p>{{ err['msg'] }}</p>
+            </div>
+            {% endif %}
+            <form id='login_details' action='/' method="POST">
                 <label class='form-el' for="email"><b>Registered Email</b></label>
                 <input class='form-el' type="email" placeholder="Enter Email" name="email" required>
 

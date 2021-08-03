@@ -96,6 +96,26 @@ form button:hover {
     /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
 }
 
+#error {
+    padding: 20px;
+    background-color: #f44336; /* Red */
+    color: white;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    width: 80%;
+}
+
+#error h4 {
+    margin-top: 0;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+#error p {
+    font-weight: 400;
+    font-size: 13px;
+}
+
 #forgot-psw {
     margin-top: 0;
     margin-bottom: 15px;
