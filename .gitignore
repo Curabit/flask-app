@@ -1,3 +1,4 @@
 curabit-docker.code-workspace
 Dockerfile
 .devcontainer/devcontainer.json
+*.pyc
