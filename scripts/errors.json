@@ -1,0 +1,18 @@
+{
+    "INVALID_PASSWORD": {
+        "headline": "Incorrect Password",
+        "msg": "The password entered did not match with our records. Please try again."
+    },
+    "EMAIL_NOT_FOUND": {
+        "headline": "Email ID not recognized",
+        "msg": "The email ID entered did not match with any of our user records. Please try again. If you are not registered as a licensed provider with us, please contact us at hello@curabit.in to get yourself registered."
+    },
+    "TOO_MANY_ATTEMPTS_TRY_LATER": {
+        "headline": "You have tried too many times.",
+        "msg": "Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later."
+    },
+    "USER_DISABLED": {
+        "headline": "User ID disabled",
+        "msg": "Your user account has been disabled. Please contact us at tech-support@curabit.in to re-activate your account."
+    }
+}

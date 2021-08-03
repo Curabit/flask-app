@@ -1,42 +1,38 @@
-import pyrebase
 from scripts import fbuser
-from flask import Flask, render_template, request, jsonify, redirect, url_for
-import json
+from flask import Flask, render_template, request
+import logging
 
 app = Flask(__name__)
+logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.DEBUG)
 
 # home route
 @app.route("/", methods=['GET','POST'])
-def login(isError=False, err=None):
+def login():
+    
     if request.method == 'POST':
+        
+        logging.debug("Accessing / via POST method")
         email = request.form.get('email')
         psw = request.form.get('psw')
+        
+        logging.debug("Signing In")
         r =  fbuser.sign_in(email, psw)
-        if r.status_code!=200:
-            resp = r.json()
-            msg = resp['error']['message']
+        
+        logging.info("Type of returned object: %s", str(type(r)))
+        if isinstance(r, fbuser.userObj):
+            logging.debug("Found userObj returned as object")
 
-            err = dict()
-            if msg == 'INVALID_PASSWORD':
-                err['headline'] = 'Incorrect Password'
-                err['msg'] = 'The password entered did not match with our records. Please try again.'
-            elif msg == 'EMAIL_NOT_FOUND':
-                err['headline'] = 'Email ID not recognized'
-                err['msg'] = 'The email ID entered did not match with any of our user records. Please try again. If you are not registered as a licensed provider with us, please contact us at hello@curabit.in to get yourself registered.'
-            elif msg == 'TOO_MANY_ATTEMPTS_TRY_LATER':
-                err['headline'] = ''
-                err['msg'] = 'Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.'
-            elif msg == 'USER_DISABLED':
-                err['headline'] = 'User ID disabled'
-                err['msg'] = 'Your user account has been disabled. Please contact us at tech-support@curabit.in to re-activate your account.'
+            if r.uType == 'admin':
+                logging.debug("Setting cookie and redirecting to admin's console")
+                return r.set_cookie(redirect_to='admin')
             else:
-                err['headline'] = msg
-                err['msg'] = msg
-            
-            return render_template('login.html', isError=True, err=err)
+                logging.debug("Setting cookie and redirecting to therapist's dashboard")
+                return  r.set_cookie(redirect_to='dashboard')
         else:
-            return jsonify(r.json())
+            logging.debug("Found render_template() as returned object")
+            return r
     else:
+        logging.debug("Accessing / via GET method")
         return render_template('login.html', isError=False, err=None)
 
 @app.route("/register", methods=['GET'])
@@ -45,10 +41,13 @@ def register():
 
 @app.route("/admin", methods=['GET'])
 def admin():
-    return render_template('admin.html')
+    email = request.cookies.get('email')  
+    return render_template('admin.html', email=email)
 
-def error(msg, code):
-    return render_template('Error.html',msg=msg, code=code)
+@app.route("/dashboard", methods=['GET'])
+def dashboard():
+    return render_template('dashboard.html')
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
