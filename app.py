@@ -1,5 +1,5 @@
 from scripts import fbuser
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import logging
 
 app = Flask(__name__)
@@ -47,6 +47,34 @@ def admin():
 @app.route("/dashboard", methods=['GET'])
 def dashboard():
     return render_template('dashboard.html')
+
+@app.route("/api/test/get-json", methods=['GET','POST'])
+def test_get_json():
+    data = {
+	'current': {
+		'file-name': 'current-video.mp4',
+		'isOnLoop': True
+		},
+	'next': [{
+		'file-name': 'next-video-1.mp4',
+		'isOnLoop': True
+		},
+		{
+		'file-name': 'next-video-2.mp4',
+		'isOnLoop': False
+		},
+		{
+		'file-name': 'next-video-3.mp4',
+		'isOnLoop': False
+		}],
+	'previous': {
+		'file-name': 'previous-video.mp4',
+		'isOnLoop': False
+		}
+    }
+    return jsonify(data)
+
+
     
 
 if __name__ == '__main__':
