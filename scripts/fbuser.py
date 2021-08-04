@@ -2,7 +2,8 @@ import os
 import json
 import requests
 import datetime
-from flask import render_template, make_response, url_for
+from flask import render_template, make_response, url_for, request
+
 import logging
 
 from werkzeug.utils import redirect
@@ -65,6 +66,50 @@ class userObj:
         logging.debug("Returning redirect response with code 302")
         return resp, 302
 
+    # def check_session(self):
+    #     if not request.cookies.get('expiry'):
+    #         return redirect(url_for('login'))
+    #     else:
+    #         expiry = datetime.datetime.strptime(str(request.cookies.get('expiry')), '%d/%m/%y %H:%M:%S')
+    #         if datetime.datetime.now() > expiry:
+    #             return self.refresh_session(request.cookies.get('refreshToken'))
+    #         else:
+    #             return True
+
+    # def refresh_session(self, rToken, key=web_key):
+    #     api_url = 'https://securetoken.googleapis.com/v1/token'
+        
+    #     payload = json.dumps({
+    #         "grant_type": "refresh_token",
+    #         "refresh_token": rToken
+    #     })
+
+    #     logging.debug("Sending refresh_token request to firebase")
+    #     r = requests.post(api_url,
+    #                     params={"key": key},
+    #                     data=payload)
+
+    #     logging.info("Received response: %s", str(r))
+
+    #     if r.status_code!=200:
+            
+    #         r_json = r.json()
+    #         err_msg = r_json['error']['message']
+    #         with open('scripts/errors.json') as errorFile:
+    #             err_dict = json.load(errorFile) 
+    #         if err_msg in err_dict:
+    #             logging.debug("Found familiar error message. Rendering login page once again.")
+    #             return render_template('login.html', isError=True, err=err_dict[err_msg])
+    #         else:
+    #             logging.debug("Found unfamiliar error message. Rendering error page.")
+    #             return render_template('error.html',msg=str(r), code=r.status_code)
+    #     else:
+    #         self.setToken(r.json())
+    #         return True
+        
+
+
+
 def sign_in(email, psw, isTokenSecure=True, key=web_key):
         api_url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword'
         
@@ -79,7 +124,6 @@ def sign_in(email, psw, isTokenSecure=True, key=web_key):
                         params={"key": key},
                         data=payload)
         logging.info("Received response: %s", str(r))
-        logging.info("Response's status code: %s", str(r.status_code))
 
         if r.status_code!=200:
             
@@ -92,7 +136,7 @@ def sign_in(email, psw, isTokenSecure=True, key=web_key):
                 return render_template('login.html', isError=True, err=err_dict[err_msg])
             else:
                 logging.debug("Found unfamiliar error message. Rendering error page.")
-                return render_template('error.html',msg=str(r), code=r.status_code)
+                return render_template('error.html',msg=str(r.json()), code=r.status_code)
         else:
 
             user = userObj()

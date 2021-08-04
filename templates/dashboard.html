@@ -16,6 +16,8 @@
     <body>
         <main>
             <h1>Admin's Console</h1>
+            <p>Signed in as {{ email }}</p>
+            <a href="{{ url_for('logout') }}">Log out</a>
             <div id='buttons'>
                 <button><i class="fas fa-user"></i> Register Therapist</button>
                 <button><i class="fas fa-stethoscope"></i> Health Check</button>

@@ -3,3 +3,4 @@ Dockerfile
 .devcontainer/devcontainer.json
 *.pyc
 scripts/pycache/*.pyc
+env_variables.txt

@@ -1,5 +1,6 @@
+from flask.helpers import make_response
 from scripts import fbuser
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect,url_for, Response
 import logging
 
 app = Flask(__name__)
@@ -33,7 +34,19 @@ def login():
             return r
     else:
         logging.debug("Accessing / via GET method")
-        return render_template('login.html', isError=False, err=None)
+        
+        logging.debug("Checking cookies for user type")
+        if not request.cookies.get('uType'):
+            logging.debug("No cookies found")
+            return render_template('login.html', isError=False, err=None)
+        else:
+            uType = request.cookies.get('uType')
+            if uType == 'admin':
+                logging.debug("Found admin user cookies")
+                return redirect(url_for('admin'))
+            else:
+                logging.debug("Found non-admin user cookies")
+                return redirect(url_for('dashboard'))
 
 @app.route("/register", methods=['GET'])
 def register():
@@ -41,12 +54,45 @@ def register():
 
 @app.route("/admin", methods=['GET'])
 def admin():
-    email = request.cookies.get('email')  
+
+    logging.debug("Checking cookies for user type")
+    if not request.cookies.get('uType'):
+        logging.debug("No cookies found")
+        return redirect(url_for('login'))
+    else:
+        uType = request.cookies.get('uType')
+        if uType != 'admin':
+            logging.debug("Found non-admin user cookies. Redirecting to user dashboard.")
+            return redirect(url_for('dashboard'))
+
+    email = request.cookies.get('email')
     return render_template('admin.html', email=email)
 
 @app.route("/dashboard", methods=['GET'])
 def dashboard():
+    
+    logging.debug("Checking cookies for user type")
+    if not request.cookies.get('uType'):
+        logging.debug("No cookies found")
+        return redirect(url_for('login'))
+    else:
+        uType = request.cookies.get('uType')
+        if uType == 'admin':
+            logging.debug("Found admin user cookies. Redirecting to admin console.")
+            return redirect(url_for('admin'))
+    
     return render_template('dashboard.html')
+
+@app.route("/logout")
+def logout():
+    resp = make_response(redirect(url_for('login')))
+    resp.delete_cookie(key='dispName')
+    resp.delete_cookie(key='email')
+    resp.delete_cookie(key='session-validity')
+    resp.delete_cookie(key='idToken')
+    resp.delete_cookie(key='refreshToken')
+    resp.delete_cookie(key='uType')
+    return resp
 
 @app.route("/api/test/get-json", methods=['GET','POST'])
 def test_get_json():

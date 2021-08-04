@@ -14,5 +14,24 @@
     "USER_DISABLED": {
         "headline": "User ID disabled",
         "msg": "Your user account has been disabled. Please contact us at tech-support@curabit.in to re-activate your account."
+    },
+    "TOKEN_EXPIRED": {
+        "headline": "Your session has expired.",
+        "msg": "Please login again."
+    },
+    "USER_NOT_FOUND": {
+        "headline": "Your user details could not be found.",
+        "msg": "Your credentials cannot be verified. Please login again."
+    },
+    "INVALID_REFRESH_TOKEN": {
+        "headline": "Your session has expired.",
+        "msg": "Please login again."
+    },
+    "INVALID_GRANT_TYPE": {
+        "headline": "Your session has expired.",
+        "msg": "Please login again."
+    },"MISSING_REFRESH_TOKEN": {
+        "headline": "Your session has expired.",
+        "msg": "Please login again."
     }
 }
