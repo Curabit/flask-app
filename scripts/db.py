@@ -1,6 +1,6 @@
 import logging, os, requests, json
 from flask import render_template, make_response, url_for, redirect
-from scripts import auth, errors
+from scripts import errors
 
 db_url = os.environ.get("FIREBASE_DB_URL")
 

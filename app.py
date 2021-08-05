@@ -1,7 +1,5 @@
-from scripts.errors import AuthError, UnknownError
-from flask.helpers import make_response
 from scripts import fbuser, errors, db, auth, fbdb
-from flask import Flask, render_template, request, jsonify, redirect,url_for, Response
+from flask import Flask, render_template, request, jsonify, redirect,url_for, Response, make_response
 import logging
 
 app = Flask(__name__)
@@ -116,6 +114,10 @@ def test_client():
 def signup():
     pass
 
+@app.errorhandler(TestError)
+def test_error_handler(e):
+    return render_template('error.html', msg=e.msg, code=e.code), 400
+
 @app.route("/test/error", methods=['GET','POST'])
 def test_error():
     raise TestError
@@ -148,11 +150,4 @@ def test_get_json():
 
 
 if __name__ == '__main__':
-    try:
-        app.run(debug=True)
-    except AuthError as e:
-        render_template('login.html', isError=True, err=e.msg)
-    except UnknownError as e:
-        render_template('error.html', msg=e.msg, code=e.code)
-    except TestError as e:
-        render_template('error.html', msg=e.msg, code=e.code)
+    app.run(debug=True)
