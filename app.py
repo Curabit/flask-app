@@ -83,7 +83,7 @@ def dashboard():
     
     return render_template('dashboard.html')
 
-@app.route("/logout")
+@app.route("/action/logout", methods=['GET','POST'])
 def logout():
     resp = make_response(redirect(url_for('login')))
     resp.delete_cookie(key='dispName')
@@ -93,6 +93,22 @@ def logout():
     resp.delete_cookie(key='refreshToken')
     resp.delete_cookie(key='uType')
     return resp
+
+@app.route("/test/dashboard", methods=['GET','POST'])
+def test_dashboard():
+    pack = dict()
+    pack['dispName'] = 'Test User'
+    return render_template('dashboard.html', pack=pack)
+
+@app.route("/test/client", methods=['GET','POST'])
+def test_client():
+    pack = dict()
+    pack['clientName'] = 'Test User'
+    return render_template('client.html', pack=pack)
+
+@app.route("/action/register", methods=['POST'])
+def signup():
+    pass
 
 @app.route("/api/test/get-json", methods=['GET','POST'])
 def test_get_json():

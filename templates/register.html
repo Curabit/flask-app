@@ -16,18 +16,21 @@
         <main>
             <img id='logo' src="{{ url_for('static',filename='assets/logo.svg') }}" alt="Curabit Logo"/>
             <h1>Therapist's Registration</h1>
-            <form id='login_details' action='/' method="POST">
+            <form id='login_details' action="{{ url_for('signup') }}" method="POST">
                 <label class='form-el' for="name"><b>Full Name</b></label>
                 <input class='form-el' type="text" placeholder="Enter Name" name="name" required>
 
                 <label class='form-el' for="email"><b>Email Address</b></label>
                 <input class='form-el' type="email" placeholder="Enter Email Address" name="email" required>
 
-                <label class='form-el' for="psw"><b>Clinic's Name</b></label>
-                <input class='form-el' type="text" placeholder="Enter Clinic's Name" name="psw" required>
+                <label class='form-el' for="psw"><b>Password</b></label>
+                <input class='form-el' type="password" placeholder="Enter password" name="psw" required></input>
 
-                <label class='form-el' for="psw"><b>Clinic's Address</b></label>
-                <textarea class='form-el' type="text" placeholder="Enter Clinic's Address" name="psw" required></textarea>
+                <label class='form-el' for="clinic_name"><b>Clinic's Name</b></label>
+                <input class='form-el' type="text" placeholder="Enter Clinic's Name" name="clinic_name" required>
+
+                <label class='form-el' for="clinic_add"><b>Clinic's Address</b></label>
+                <textarea class='form-el' type="text" placeholder="Enter Clinic's Address" name="clinic_add" required></textarea>
 
                 <button class='form-el' type="submit">Register</button>
             </form>
