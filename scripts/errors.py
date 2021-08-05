@@ -1,4 +1,9 @@
-{
+import logging
+from flask import render_template
+
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.DEBUG)
+
+auth_errors = {
     "INVALID_PASSWORD": {
         "headline": "Incorrect Password",
         "msg": "The password entered did not match with our records. Please try again."
@@ -30,8 +35,29 @@
     "INVALID_GRANT_TYPE": {
         "headline": "Your session has expired.",
         "msg": "Please login again."
-    },"MISSING_REFRESH_TOKEN": {
+    },
+    "MISSING_REFRESH_TOKEN": {
         "headline": "Your session has expired.",
         "msg": "Please login again."
     }
 }
+
+class AuthError(Exception):    
+    def __init__(self, resp):
+        logging.debug("Authentication Error. Rendering login page with error details.")
+        self.msg = auth_errors[resp['error']['message']]
+
+class UnknownError(Exception):
+    def __init__(self, resp):
+        logging.warning("Unknown error from Firebase Auth API. Rendering error page with details.")
+        self.code = resp['error']['code']
+        self.msg = str(resp)
+
+def handle_error(resp):
+
+    if (resp['error']['message'] in auth_errors):
+        raise AuthError(resp)
+        return render_template('login.html', isError=True, err=auth_errors[resp['error']['message']])
+    else:
+        raise UnknownError(resp)
+        return render_template('error.html',msg=str(resp), code=resp['error']['code'])

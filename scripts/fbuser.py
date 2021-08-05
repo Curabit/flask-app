@@ -2,7 +2,8 @@ import os
 import json
 import requests
 import datetime
-from flask import render_template, make_response, url_for, request
+from flask import render_template, make_response, url_for
+from scripts import fbdb
 
 import logging
 
@@ -11,7 +12,7 @@ from werkzeug.utils import redirect
 logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.DEBUG)
 
 web_key = os.environ.get('FIREBASE_WEB_API_KEY')
-db_url = os.environ.get("FIREBASE_DB_URL")
+
 
 class userObj:
 
@@ -22,17 +23,7 @@ class userObj:
         self.uType = ""
         self.token = dict()
         
-    def check_admin(self, email, db_url=db_url):
-        logging.debug("Checking if user is admin")
-        endpoint = '/admin-access.json'
-        resp = requests.get(db_url+endpoint).json()
-        
-        if email in resp:
-            logging.info("User found to be admin")
-            return 'admin'
-        else:
-            logging.info("User found to be therapist")
-            return 'therapist'
+    
     
     def setToken(self, r):
         logging.debug("Setting token from received response.")
@@ -46,7 +37,8 @@ class userObj:
         logging.debug("Setting user details from received response.")
         self.dispName = r['displayName']
         self.email = r['email']
-        self.uType = self.check_admin(self.email,db_url=db_url)
+        self.uid = r['localId']
+        self.uType = fbdb.check_admin(self.uid, r['idToken'])
 
     def set_cookie(self, redirect_to):
 
@@ -57,6 +49,7 @@ class userObj:
         resp.set_cookie('email',self.email)
         resp.set_cookie('session-validity',self.token['expiry'])
         resp.set_cookie('idToken',self.token['idToken'])
+        resp.set_cookie('uid',self.uid)
         resp.set_cookie('refreshToken',self.token['refreshToken'])
         resp.set_cookie('uType',self.uType)
 

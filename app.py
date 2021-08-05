@@ -1,10 +1,16 @@
+from scripts.errors import AuthError, UnknownError
 from flask.helpers import make_response
-from scripts import fbuser
+from scripts import fbuser, errors, db, auth, fbdb
 from flask import Flask, render_template, request, jsonify, redirect,url_for, Response
 import logging
 
 app = Flask(__name__)
 logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.DEBUG)
+
+class TestError(Exception):
+    def __init__(self):
+        self.code = 400
+        self.msg = "I created this error"
 
 # home route
 @app.route("/", methods=['GET','POST'])
@@ -110,6 +116,10 @@ def test_client():
 def signup():
     pass
 
+@app.route("/test/error", methods=['GET','POST'])
+def test_error():
+    raise TestError
+
 @app.route("/api/test/get-json", methods=['GET','POST'])
 def test_get_json():
     data = {
@@ -137,7 +147,12 @@ def test_get_json():
     return jsonify(data)
 
 
-    
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    try:
+        app.run(debug=True)
+    except AuthError as e:
+        render_template('login.html', isError=True, err=e.msg)
+    except UnknownError as e:
+        render_template('error.html', msg=e.msg, code=e.code)
+    except TestError as e:
+        render_template('error.html', msg=e.msg, code=e.code)

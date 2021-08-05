@@ -5,73 +5,65 @@
         <meta http-equiv="Content-Style-Type" content="text/css">
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
 
-        <title>Dashboard | Curabit</title>
+        <title>{{ pack['clientName'] }} | Curabit</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
         <link rel="shortcut icon" type="image/ico" href="{{ url_for('static',filename='assets/favicon.png') }}" />
-        <link href="{{ url_for('static',filename='css/dashboard.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ url_for('static',filename='css/client.css') }}" rel="stylesheet" type="text/css" />
     </head>
     <body>
         <header>
-            <h1 style="font-weight: 300;">Welcome, <span style="font-weight: 600;">{{ pack['dispName'] }}</span></h1>
-            <div id='button-container'>
-                <a href="#" class="button light-button"><i class="fas fa-cog"></i>  Account</a>
-                <a href="{{ url_for('logout') }}" class="button dark-button"><i class="fas fa-power-off"></i>  Log out</a>
+            <h1 style="font-weight: 300;">Client <span style="font-weight: 600;">{{ pack['clientName'] }}</span></h1>
+            <div class='button-container'>
+                <a href="#" class="button light-button"><i class="fas fa-sign-out-alt fa-flip-horizontal"></i>  Dashboard</a>
+                <a href="{{ url_for('logout') }}" class="button dark-button" id='start-button'><i class="far fa-play-circle"></i>  Start Session</a>
             </div>
         </header>
         <hr>
         <main>
-            <div class='section' id='clients'>
+            <div class='section' id='details'>
                 <div class='headline'>
-                    <h2 style="font-weight: 400; padding-left: 10px;">Clients</h2>
-                    <p style="font-weight: 400; font-size: 22px; padding: 0px; margin: 0px; padding-right: 10px;">Click on a client to proceed</p>
+                    <h2 style="font-weight: 400">Client's Details</h2>
+                    <div class='button-container'>
+                        <a href="#" class="button light-button"><i class="fas fa-edit"></i>  Edit</a>
+                        <a href="#" class="button light-button" id='delete-btn'><i class="fas fa-trash-alt"></i>  Delete</a>
+                    </div>
+                    
                 </div>
-                <div class='card-container'>
-                    <a href='#'>
-                    <div class='card'>
-                        <h3>Client's Name 1</h3>
+                <div class='detail-container'>
+                    <div class='detail'>
+                        <h4>Name</h4>
+                        <p>Rishabh Nanawati</p>
                     </div>
-                    </a>
-                    <a href='#'>
-                    <div class='card'>
-                        <h3>Client's Name 1</h3>
+                    <div class='detail'>
+                        <h4>Age</h4>
+                        <p>22</p>
                     </div>
-                    </a>
-                    <a href='#'>
-                    <div class='card'>
-                        <h3>Client's Name 1</h3>
+                    <div class='detail'>
+                        <h4>Gender</h4>
+                        <p>Male</p>
                     </div>
-                    </a>
-                    <a href='#'>
-                    <div class='card'>
-                        <h3>Client's Name 1</h3>
+                    <div class='detail'>
+                        <h4>Email</h4>
+                        <p>rishabh.nanawati7@gmail.com</p>
                     </div>
-                    </a>
-                    <a href='#'>
-                    <div class='card'>
-                        <h3>Client's Name 1</h3>
+                    <div class='detail'>
+                        <h4>Registered On</h4>
+                        <p>27th February, 2020</p>
                     </div>
-                    </a>
-                    <a href='#'>
-                    <div class='card'>
-                        <h3>Client's Name 1</h3>
+                    <div class='detail'>
+                        <h4>Last used simulation on</h4>
+                        <p>30th April, 2021</p>
                     </div>
-                    </a>
-                    <a href='#'>
-                    <div class='card'>
-                        <span id='large-plus'><i class="fas fa-plus-circle"></i></span>
-                        <h3>Add New Client</h3>
-                    </div>
-                    </a>
                 </div>
             </div>
             <hr>
             <div class='section' id='usage'>
                 <div class='headline'>
-                    <h2 style="font-weight: 400; padding-left: 10px;">Usage</h2>
-                    <a href="#" class="button light-button"><i class="fas fa-history"></i>  View All Usage History</a>
+                    <h2 style="font-weight: 400;">Usage</h2>
+                    <p style="font-weight: 400; font-size: 22px; padding: 0px; margin: 0px; padding-right: 10px;">Showing all usage history</p>
                 </div>
         </main>
         <footer>
