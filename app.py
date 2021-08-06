@@ -1,14 +1,28 @@
-from scripts import fbuser, errors, db, auth, fbdb
+from scripts import auth, db, errors
 from flask import Flask, render_template, request, jsonify, redirect,url_for, Response, make_response
 import logging
 
 app = Flask(__name__)
 logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.DEBUG)
 
-class TestError(Exception):
-    def __init__(self):
-        self.code = 400
-        self.msg = "I created this error"
+def verify_role(match_type=None):
+    logging.debug("Checking cookies for user type")
+    if ('uType' not in request.cookies):
+        logging.debug("No cookies found")
+        return render_template('login.html', isError=False, err=None)
+    else:
+        logging.debug("Found cookies")
+        uType = request.cookies.get('uType')
+        if match_type == uType:
+            return "All OK"
+        else:
+            if uType == 'admin':
+                logging.debug("User identified as admin")
+                return redirect(url_for('admin'))
+            else:
+                logging.debug("User identified as therapist")
+                return redirect(url_for('therapist'))
+
 
 # home route
 @app.route("/", methods=['GET','POST'])
@@ -21,83 +35,92 @@ def login():
         psw = request.form.get('psw')
         
         logging.debug("Signing In")
-        r =  fbuser.sign_in(email, psw)
+        return auth.sign_in(email, psw)
         
-        logging.info("Type of returned object: %s", str(type(r)))
-        if isinstance(r, fbuser.userObj):
-            logging.debug("Found userObj returned as object")
-
-            if r.uType == 'admin':
-                logging.debug("Setting cookie and redirecting to admin's console")
-                return r.set_cookie(redirect_to='admin')
-            else:
-                logging.debug("Setting cookie and redirecting to therapist's dashboard")
-                return  r.set_cookie(redirect_to='dashboard')
-        else:
-            logging.debug("Found render_template() as returned object")
-            return r
     else:
         logging.debug("Accessing / via GET method")
-        
-        logging.debug("Checking cookies for user type")
-        if not request.cookies.get('uType'):
-            logging.debug("No cookies found")
-            return render_template('login.html', isError=False, err=None)
-        else:
-            uType = request.cookies.get('uType')
-            if uType == 'admin':
-                logging.debug("Found admin user cookies")
-                return redirect(url_for('admin'))
-            else:
-                logging.debug("Found non-admin user cookies")
-                return redirect(url_for('dashboard'))
+        return verify_role()
 
-@app.route("/register", methods=['GET'])
-def register():
-    return render_template('register.html')
-
-@app.route("/admin", methods=['GET'])
+@app.route("/admin/dashboard", methods=['GET'])
 def admin():
 
-    logging.debug("Checking cookies for user type")
-    if not request.cookies.get('uType'):
-        logging.debug("No cookies found")
-        return redirect(url_for('login'))
-    else:
-        uType = request.cookies.get('uType')
-        if uType != 'admin':
-            logging.debug("Found non-admin user cookies. Redirecting to user dashboard.")
-            return redirect(url_for('dashboard'))
+    chk_role = verify_role('admin')
+    if chk_role != "All OK":
+        return chk_role
 
     email = request.cookies.get('email')
     return render_template('admin.html', email=email)
 
-@app.route("/dashboard", methods=['GET'])
-def dashboard():
+@app.route("/admin/manage", methods=['GET', 'POST'])
+def manage_therapists():
+    pass
+    #TODO: Manage therapist from admin's console
+
+@app.route("/admin/manage/add", methods=['GET', 'POST'])
+def add_therapist():
+    pass
+    #TODO: Registration of therapist from admin's console
+
+@app.route("/admin/manage/delete", methods=['GET', 'POST'])
+def delete_therapist():
+    pass
+    #TODO: Add Javascript alert that confirm's deletion of therapist
+    #TODO: Delete therapist from admin's console
+
+@app.route("/therapist/dashboard", methods=['GET'])
+def therapist():
     
-    logging.debug("Checking cookies for user type")
-    if not request.cookies.get('uType'):
-        logging.debug("No cookies found")
-        return redirect(url_for('login'))
-    else:
-        uType = request.cookies.get('uType')
-        if uType == 'admin':
-            logging.debug("Found admin user cookies. Redirecting to admin console.")
-            return redirect(url_for('admin'))
+    chk_role = verify_role('therapist')
+    if chk_role != "All OK":
+        return chk_role
     
     return render_template('dashboard.html')
 
+@app.route("/therapist/client/view", methods=['GET', 'POST'])
+def view_client():
+    pass
+    #TODO: View client's details
+
+@app.route("/therapist/client/add", methods=['GET', 'POST'])
+def add_client():
+    pass
+    #TODO: Addition of client by therapist
+
+@app.route("/therapist/client/delete", methods=['GET', 'POST'])
+def delete_client():
+    pass
+    #TODO: Add Javascript alert that confirm's deletion of client
+    #TODO: Delete client from therapist's console
+
+@app.route("/therapist/session/view", methods=['GET', 'POST'])
+def view_session():
+    pass
+    #TODO: View session's details
+
+@app.route("/therapist/session/do", methods=['GET', 'POST'])
+def do_session():
+    pass
+    #TODO: Do session
+
+@app.route("/therapist/session/stop", methods=['GET', 'POST'])
+def stop_session():
+    pass
+    #TODO: Stop session
+
 @app.route("/action/logout", methods=['GET','POST'])
 def logout():
-    resp = make_response(redirect(url_for('login')))
-    resp.delete_cookie(key='dispName')
-    resp.delete_cookie(key='email')
-    resp.delete_cookie(key='session-validity')
-    resp.delete_cookie(key='idToken')
-    resp.delete_cookie(key='refreshToken')
-    resp.delete_cookie(key='uType')
-    return resp
+    return auth.clear_cookies()
 
+#Error Handling
+@app.errorhandler(errors.AuthError)
+def auth_error(e):
+    return render_template('login.html', isError=True, err=e.msg)
+
+@app.errorhandler(errors.UnknownError)
+def unknown_error(e):
+    return render_template('error.html',msg=e.msg, code=e.code)
+
+# Test Routes
 @app.route("/test/dashboard", methods=['GET','POST'])
 def test_dashboard():
     pack = dict()
@@ -109,18 +132,6 @@ def test_client():
     pack = dict()
     pack['clientName'] = 'Test User'
     return render_template('client.html', pack=pack)
-
-@app.route("/action/register", methods=['POST'])
-def signup():
-    pass
-
-@app.errorhandler(TestError)
-def test_error_handler(e):
-    return render_template('error.html', msg=e.msg, code=e.code), 400
-
-@app.route("/test/error", methods=['GET','POST'])
-def test_error():
-    raise TestError
 
 @app.route("/api/test/get-json", methods=['GET','POST'])
 def test_get_json():

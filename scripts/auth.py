@@ -6,6 +6,14 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', datefmt=
 
 web_key = os.environ.get('FIREBASE_WEB_API_KEY')
 
+def clear_cookies():
+    resp = make_response(redirect(url_for('login')))
+    resp.delete_cookie(key='idToken')
+    resp.delete_cookie(key='rToken')
+    resp.delete_cookie(key='uId')
+    resp.delete_cookie(key='uType')
+    return resp
+
 def set_cookies(authResp, redirect_to='login'):
 
     logging.debug("Setting cookies")
@@ -31,6 +39,7 @@ def set_cookies(authResp, redirect_to='login'):
 
     if ('uType' not in request.cookies):
         uType = db.check_admin_rights(request.cookies.get('idToken'), request.cookies.get('uId'))
+        resp.set_cookie('uType', uType)
 
     logging.info("Redirecting to %s", redirect_to)
     resp.headers['location'] = url_for(redirect_to) 
@@ -55,13 +64,13 @@ def refreshToken(rToken, key=web_key):
 
     resp = r.json()
     if (r.status_code != 200):
-        return errors.handle_error(resp)
+        errors.handle_error(resp)
     else:
         logging.debug("Setting cookies to newly refreshed auth details")
         set_cookies(resp)
-        return 'Cookies refreshed successfully'
+        return #TODO: What to do after refreshing cookies?
 
-def sign_in(email, psw, key=web_key):
+def sign_in(email, psw, redirect_to='login', key=web_key):
     
     api_url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword'
         
@@ -80,15 +89,15 @@ def sign_in(email, psw, key=web_key):
 
     resp = r.json()
     if (r.status_code != 200):
-        return errors.handle_error(resp) 
+        errors.handle_error(resp) 
 
     else:
         
         logging.debug("Setting cookies to newly received auth details")
         set_cookies(resp)
 
-        logging.debug("Redirecting to login page")
-        return redirect('login')
+        logging.debug("Redirecting to %s page", str(redirect_to))
+        return redirect(redirect_to)
 
 def sign_up(email, psw, key=web_key):
     
@@ -109,7 +118,7 @@ def sign_up(email, psw, key=web_key):
 
     resp = r.json()
     if (r.status_code != 200):
-        return errors.handle_error(resp) 
+        errors.handle_error(resp) 
         
     else:
         

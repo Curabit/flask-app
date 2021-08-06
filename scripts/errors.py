@@ -57,7 +57,5 @@ def handle_error(resp):
 
     if (resp['error']['message'] in auth_errors):
         raise AuthError(resp)
-        return render_template('login.html', isError=True, err=auth_errors[resp['error']['message']])
     else:
         raise UnknownError(resp)
-        return render_template('error.html',msg=str(resp), code=resp['error']['code'])
