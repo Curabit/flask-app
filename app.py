@@ -23,9 +23,8 @@ def verify_role(match_type=None):
                 logging.debug("User identified as therapist")
                 return redirect(url_for('therapist'))
 
-
-# home route
 @app.route("/", methods=['GET','POST'])
+@app.route("/login", methods=['GET','POST'])
 def login():
     
     if request.method == 'POST':
@@ -48,24 +47,22 @@ def admin():
     if chk_role != "All OK":
         return chk_role
 
-    email = request.cookies.get('email')
-    return render_template('admin.html', email=email)
+    return render_template('admin.html')
 
-@app.route("/admin/manage", methods=['GET', 'POST'])
-def manage_therapists():
-    pass
-    #TODO: Manage therapist from admin's console
-
-@app.route("/admin/manage/add", methods=['GET', 'POST'])
+@app.route("/admin/add", methods=['GET', 'POST'])
 def add_therapist():
     pass
     #TODO: Registration of therapist from admin's console
 
-@app.route("/admin/manage/delete", methods=['GET', 'POST'])
-def delete_therapist():
+@app.route("/admin/reset-password", methods=['GET', 'POST'])
+def reset_password():
     pass
-    #TODO: Add Javascript alert that confirm's deletion of therapist
-    #TODO: Delete therapist from admin's console
+    #TODO: Reset password from admin's console
+
+@app.route("/admin/view-logs", methods=['GET', 'POST'])
+def view_logs():
+    pass
+    #TODO: View logs from admin's console
 
 @app.route("/therapist/dashboard", methods=['GET'])
 def therapist():

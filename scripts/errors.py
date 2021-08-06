@@ -50,12 +50,15 @@ class AuthError(Exception):
 class UnknownError(Exception):
     def __init__(self, resp):
         logging.warning("Unknown error from Firebase Auth API. Rendering error page with details.")
-        self.code = resp['error']['code']
+        if 'code' not in resp['error']:
+            self.code = resp['error']['code']
+        else:
+            self.code = 999
         self.msg = str(resp)
 
 def handle_error(resp):
 
-    if (resp['error']['message'] in auth_errors):
+    if ("message" in resp['error']) and (resp['error']['message'] in auth_errors):
         raise AuthError(resp)
     else:
         raise UnknownError(resp)

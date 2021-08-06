@@ -22,14 +22,18 @@ def set_cookies(authResp, redirect_to='login'):
     logging.debug("Storing user ID")
     if ('localId' in authResp.keys()):
         resp.set_cookie('uId', authResp['localId'])
+        uId = authResp['localId']
     elif ('user_id' in authResp.keys()):
         resp.set_cookie('uId', authResp['user_id'])
+        uId = authResp['user_id']
     
     logging.debug("Storing ID token")
     if ('idToken' in authResp.keys()):
         resp.set_cookie('idToken', authResp['idToken'])
+        idToken = authResp['idToken']
     elif ('id_token' in authResp.keys()):
         resp.set_cookie('idToken', authResp['id_token'])
+        idToken = authResp['id_token']
     
     logging.debug("Storing refresh token")
     if ('refreshToken' in authResp.keys()):
@@ -38,11 +42,11 @@ def set_cookies(authResp, redirect_to='login'):
         resp.set_cookie('rToken', authResp['refresh_token'])
 
     if ('uType' not in request.cookies):
-        uType = db.check_admin_rights(request.cookies.get('idToken'), request.cookies.get('uId'))
+        uType = db.check_admin_rights(idToken=idToken,uid=uId)
         resp.set_cookie('uType', uType)
 
     logging.info("Redirecting to %s", redirect_to)
-    resp.headers['location'] = url_for(redirect_to) 
+    resp.headers['location'] = url_for(redirect_to)
 
     logging.debug("Returning redirect response with code 302")
     return resp, 302
@@ -60,7 +64,7 @@ def refreshToken(rToken, key=web_key):
                     params={"key": key},
                     data=payload)
     
-    logging.info("Received response: %s", str(r))
+    logging.info("Received response: %s", str(r.json()))
 
     resp = r.json()
     if (r.status_code != 200):
@@ -85,7 +89,7 @@ def sign_in(email, psw, redirect_to='login', key=web_key):
                     params={"key": key},
                     data=payload)
     
-    logging.info("Received response: %s", str(r))
+    logging.info("Received response: %s", str(r.json()))
 
     resp = r.json()
     if (r.status_code != 200):
@@ -94,10 +98,7 @@ def sign_in(email, psw, redirect_to='login', key=web_key):
     else:
         
         logging.debug("Setting cookies to newly received auth details")
-        set_cookies(resp)
-
-        logging.debug("Redirecting to %s page", str(redirect_to))
-        return redirect(redirect_to)
+        return set_cookies(resp)
 
 def sign_up(email, psw, key=web_key):
     
@@ -114,7 +115,7 @@ def sign_up(email, psw, key=web_key):
                     params={"key": key},
                     data=payload)
     
-    logging.info("Received response: %s", str(r))
+    logging.info("Received response: %s", str(r.json()))
 
     resp = r.json()
     if (r.status_code != 200):

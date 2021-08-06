@@ -5,7 +5,7 @@
         <meta http-equiv="Content-Style-Type" content="text/css">
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
 
-        <title>Therapist's Centre | Curabit</title>
+        <title>Console | Curabit</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
@@ -15,7 +15,7 @@
     <body>
         <main>
             <img id='logo' src="{{ url_for('static',filename='assets/logo.svg') }}" alt="Curabit Logo"/>
-            <h1>Therapist's Centre</h1>
+            <h1>Console</h1>
             {% if isError is true %}
             <div id='error'>
                 <h4>{{ err['headline'] }}</h4>

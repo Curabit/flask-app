@@ -7,9 +7,10 @@ db_url = os.environ.get("FIREBASE_DB_URL")
 def check_admin_rights(idToken, uid):
     
     logging.debug("Checking if user is admin")
+    # logging.info("idToken: %s", idToken)
     endpoint = '/admin-access.json'
     r = requests.get(db_url+endpoint, params={"auth": idToken})
-    logging.info("Received response: "+str(r))
+    logging.info("Received response: "+str(r.json()))
 
     if (r.status_code != 200):
         errors.handle_error(r.json())

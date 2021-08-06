@@ -5,7 +5,7 @@
         <meta http-equiv="Content-Style-Type" content="text/css">
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
 
-        <title>Admin | Curabit</title>
+        <title>Admin's Console | Curabit</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
@@ -15,17 +15,11 @@
     </head>
     <body>
         <main>
-            <h1>Admin's Console</h1>
-            <p>Signed in as {{ email }}</p>
-            <a href="{{ url_for('logout') }}">Log out</a>
-            <div id='buttons'>
-                <button><i class="fas fa-user"></i> Register Therapist</button>
-                <button><i class="fas fa-stethoscope"></i> Health Check</button>
-                <button><i class="fas fa-clipboard-list"></i> View Logs</button>
-                <button><i class="fas fa-chart-area"></i> View Metrics</button>
-                <button><i class="fas fa-route"></i> Tracing</button>
-                <button><i class="fas fa-microchip"></i> Resource Consumption</button>
-            </div>
+            <h1>Administrator's Console</h1>
+            <a href='#' class='button light-button'><i class="fas fa-user-plus"></i> Therapist Registration</a>
+            <a href='#' class='button light-button'><i class="fas fa-key"></i> Password Change</a>
+            <a href='#' class='button light-button'><i class="fas fa-clipboard-list"></i> View Logs</a>
+            <a href='/action/logout' class='button dark-button'><i class="fas fa-power-off"></i> Logout</a>
         </main>
         <footer>
             <img id='logo' src="{{ url_for('static',filename='assets/logo.svg') }}" alt="Curabit Logo"/>
