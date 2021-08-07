@@ -154,7 +154,8 @@ def test_get_json():
 		'file-name': 'current-video.mp4',
 		'isOnLoop': True
 		},
-	'next': [{
+    'next-count': 3,
+    'next': [{
 		'file-name': 'next-video-1.mp4',
 		'isOnLoop': True
 		},
