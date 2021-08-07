@@ -74,7 +74,7 @@ def refreshToken(rToken, key=web_key):
         set_cookies(resp)
         return #TODO: What to do after refreshing cookies?
 
-def sign_in(email, psw, redirect_to='login', key=web_key):
+def sign_in(email, psw, key=web_key):
     
     api_url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword'
         
@@ -100,7 +100,7 @@ def sign_in(email, psw, redirect_to='login', key=web_key):
         logging.debug("Setting cookies to newly received auth details")
         return set_cookies(resp)
 
-def sign_up(email, psw, key=web_key):
+def sign_up(email, psw, name, clinic, key=web_key):
     
     api_url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp'
         
@@ -123,8 +123,9 @@ def sign_up(email, psw, key=web_key):
         
     else:
         
-        logging.debug("Setting cookies to newly received auth details")
-        set_cookies(resp)
+        uId = resp['localId']
+        logging.debug("Add therapist's details to admin and user database")
+        db.add_therapist(email=email, uId=uId, name=name, clinic=clinic)
 
-        logging.debug("Redirecting to login page")
-        return redirect('login')
+        logging.debug("Setting cookies to newly received auth details")
+        return set_cookies(resp)

@@ -5,11 +5,11 @@ import logging
 app = Flask(__name__)
 logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.DEBUG)
 
-def verify_role(match_type=None):
+def verify_role(match_type=None, redirect_to='login'):
     logging.debug("Checking cookies for user type")
     if ('uType' not in request.cookies):
         logging.debug("No cookies found")
-        return render_template('login.html', isError=False, err=None)
+        return render_template(str(redirect_to+'.html'), isError=False, err=None)
     else:
         logging.debug("Found cookies")
         uType = request.cookies.get('uType')
@@ -51,8 +51,24 @@ def admin():
 
 @app.route("/admin/add", methods=['GET', 'POST'])
 def add_therapist():
-    pass
-    #TODO: Registration of therapist from admin's console
+    
+    # Registration of therapist from admin's console
+    if request.method == 'POST':
+        
+        logging.debug("Accessing / via POST method")
+        email = request.form.get('email')
+        psw = request.form.get('psw')
+        name = request.form.get('name')
+        clinic = dict()
+        clinic['name'] = request.form.get('clinic_name')
+        clinic['address'] = request.form.get('clinic_add')
+        
+        logging.debug("Signing up")
+        return auth.sign_up(email=email, psw=psw, name=name, clinic=clinic)
+        
+    else:
+        logging.debug("Accessing / via GET method")
+        return render_template('register.html')
 
 @app.route("/admin/reset-password", methods=['GET', 'POST'])
 def reset_password():
@@ -133,6 +149,7 @@ def test_client():
 @app.route("/api/test/get-json", methods=['GET','POST'])
 def test_get_json():
     data = {
+    'isStop': False,
 	'current': {
 		'file-name': 'current-video.mp4',
 		'isOnLoop': True
