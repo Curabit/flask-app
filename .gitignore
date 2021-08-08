@@ -1,5 +1,4 @@
 curabit-docker.code-workspace
-Dockerfile
 .devcontainer/devcontainer.json
+.flaskenv
 *.pyc
-scripts/pycache/*.pyc
