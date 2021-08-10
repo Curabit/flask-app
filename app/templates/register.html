@@ -1,0 +1,36 @@
+{% extends "base-entry.html" %}
+
+{% block title %}Therapist's Registration{% endblock %}
+{% block heading %}Therapist's Registration{% endblock %}
+
+{% block content %}
+<form id='registration_details' action="#TODO: Define Form Action" method="POST">
+    <label for="full_name" style="align-self: flex-start;"><b><i class="fas fa-id-card"></i> Full Name</b></label>
+    <input type="text" placeholder="Enter Full Name" name="full_name" required style="width: 100%; align-self: flex-start;">
+
+    <label for="clinic_name" style="align-self: flex-start;"><b><i class="fas fa-clinic-medical"></i> Clinic's Name</b></label>
+    <input type="text" placeholder="Enter Clinic Name" name="clinic_name" required style="width: 100%; align-self: flex-start;">
+
+    <label for="clinic_add" style="align-self: flex-start;"><b><i class="fas fa-map-marked-alt"></i> Clinic's Address</b></label>
+    <textarea style="font-family: 'Roboto Slab', serif; font-size: 15px;" placeholder="Enter Clinic Address" name="clinic_add" required style="width: 100%; align-self: flex-start;"></textarea>
+    
+    <label for="email" style="align-self: flex-start;"><b><i class="fas fa-envelope"></i> Email Address</b></label>
+    <input type="email" placeholder="Enter Email" name="email" required style="width: 100%; align-self: flex-start;">
+
+    <label for="psw" style="align-self: flex-start;"><b><i class="fas fa-key"></i> Password</b></label>
+    <div>
+        <input type="password" placeholder="Create Password" autocomplete="new-password" minlength="8" id='psw' name="psw" required style="width: 100%; align-self: flex-start;">
+        <i class="far fa-eye" id="togglePassword" style="margin-left: -30px; cursor: pointer;"></i>
+    </div>
+
+    <div style="width: 100%; align-self: center; justify-content: center;" id="form-options">
+        <label><input style type="checkbox" name="remember" name="logged-in"> By signing up, I agree to the <a href="#TODO: Add link to terms and conditions" class='link-underline' style="font-weight: 600;">terms and conditions</a> and <a href="#TODO: Add link to privacy policy" class='link-underline' style="font-weight: 600;">the privacy policy</a>.</label>
+    </div>
+    
+    <!-- TODO: Define Submit button's onclick() action, if any. -->
+    <button type="submit" class="dark-btn" style="width: 50%; align-self: center;"><i class="fas fa-user-plus"></i> Register</button>
+
+    <p style="align-self: center; margin-top: 10px;">Already registered with Curabit? <a href="TODO: Add link to log in" class='link-underline' style="font-weight: 500;">Log in!</a></p>
+    
+</form>
+{% endblock %}

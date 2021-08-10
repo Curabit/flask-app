@@ -1,17 +1,28 @@
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta http-equiv="Content-Style-Type" content="text/css">
-        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+{% extends "base-entry.html" %}
 
-        <title>{{ page-title }}</title>
-        <!-- <link rel="shortcut icon" type="image/ico" href="TODO: Add favicon" /> -->
+{% block title %}Log In{% endblock %}
+{% block heading %}Log In{% endblock %}
 
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    </head>
-    <body>
-        
-    </body>
-</html>
+{% block content %}
+<form id='login_details' action="#TODO: Define Form Action" method="POST">
+    <label for="email" style="align-self: flex-start;"><b><i class="fas fa-envelope"></i> Registered Email</b></label>
+    <input type="email" placeholder="Enter Email" name="email" required style="width: 100%; align-self: flex-start;">
+
+    <label for="psw" style="align-self: flex-start;"><b><i class="fas fa-key"></i> Password</b></label>
+    <div>
+        <input type="password" placeholder="Enter Password" id='psw' name="psw" autocomplete="current-password" required style="width: 100%; align-self: flex-start;">
+        <i class="far fa-eye" id="togglePassword" style="margin-left: -30px; cursor: pointer;"></i>
+    </div>
+
+    <div style="width: 80%; align-self: center; justify-content: space-between;" id="form-options">
+        <label><input type="checkbox" checked="checked" name="remember" name="logged-in"> Keep me logged in</label>
+        <a href="TODO: Add link to forgot password" class="link-underline">Forgot password?</a>
+    </div>
+    
+    <!-- TODO: Define Submit button's onclick() action, if any. -->
+    <button type="submit" class="dark-btn" style="width: 50%; align-self: center;"><i class="fas fa-unlock"></i> Login</button>
+
+    <p style="align-self: center; margin-top: 10px;">Are you a therapist not registered with Curabit yet? <a href="TODO: Add link to register therapist" class='link-underline' style="font-weight: 500;">Register now!</a></p>
+    
+</form>
+{% endblock %}
