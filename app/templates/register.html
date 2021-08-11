@@ -3,32 +3,82 @@
 {% block title %}Therapist's Registration{% endblock %}
 {% block heading %}Therapist's Registration{% endblock %}
 
+{% block scriptcontent %}
+const togglePassword2 = document.querySelector('#togglePassword2');
+const password2 = document.querySelector('#psw2');
+
+togglePassword2.addEventListener('click', function (e) {
+    // toggle the type attribute
+    const type2 = password2.getAttribute('type') === 'password' ? 'text' : 'password';
+    password2.setAttribute('type', type2);
+    // toggle the eye slash icon
+    this.classList.toggle('fa-eye-slash');
+});
+{% endblock %}
+
 {% block content %}
-<form id='registration_details' action="#TODO: Define Form Action" method="POST">
-    <label for="full_name" style="align-self: flex-start;"><b><i class="fas fa-id-card"></i> Full Name</b></label>
-    <input type="text" placeholder="Enter Full Name" name="full_name" required style="width: 100%; align-self: flex-start;">
-
-    <label for="clinic_name" style="align-self: flex-start;"><b><i class="fas fa-clinic-medical"></i> Clinic's Name</b></label>
-    <input type="text" placeholder="Enter Clinic Name" name="clinic_name" required style="width: 100%; align-self: flex-start;">
-
-    <label for="clinic_add" style="align-self: flex-start;"><b><i class="fas fa-map-marked-alt"></i> Clinic's Address</b></label>
-    <textarea style="font-family: 'Roboto Slab', serif; font-size: 15px;" placeholder="Enter Clinic Address" name="clinic_add" required style="width: 100%; align-self: flex-start;"></textarea>
+<form id='registration_details' method="POST">
+    {{ form.hidden_tag() }}
     
-    <label for="email" style="align-self: flex-start;"><b><i class="fas fa-envelope"></i> Email Address</b></label>
-    <input type="email" placeholder="Enter Email" name="email" required style="width: 100%; align-self: flex-start;">
+    <label for="full_name"><b><i class="fas fa-id-card"></i> Full Name</b></label>
+    {{ form.th_name(size=32) }}
+    {% for error in form.th_name.errors %}
+    <div class="error">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+    {% endfor %}
 
-    <label for="psw" style="align-self: flex-start;"><b><i class="fas fa-key"></i> Password</b></label>
-    <div>
-        <input type="password" placeholder="Create Password" autocomplete="new-password" minlength="8" id='psw' name="psw" required style="width: 100%; align-self: flex-start;">
+    <label for="email"><b><i class="fas fa-envelope"></i> Email Address</b></label>
+    {{ form.email(size=70) }}
+    {% for error in form.email.errors %}
+    <div class="error">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+    {% endfor %}
+
+    <label for="clinic_name"><b><i class="fas fa-clinic-medical"></i> Clinic's Name</b></label>
+    {{ form.clinic_name(size=50) }}
+    {% for error in form.clinic_name.errors %}
+    <div class="error">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+    {% endfor %}
+
+    <label for="clinic_add"><b><i class="fas fa-map-marked-alt"></i> Clinic's Address</b></label>
+    {{ form.clinic_add(size=250) }}
+    {% for error in form.clinic_add.errors %}
+    <div class="error">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+    {% endfor %}
+    
+    <label for="psw" style="align-self: flex-start; margin-top: 10px;"><b><i class="fas fa-key"></i> Password</b></label>
+    <div id="psw-container" style="width: 100%">
+        {{ form.psw(size=32) }}
         <i class="far fa-eye" id="togglePassword" style="margin-left: -30px; cursor: pointer;"></i>
     </div>
+    {% for error in form.psw.errors %}
+    <div class="error">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+    {% endfor %}
+
+    <label for="psw2" style="align-self: flex-start; margin-top: 10px;"><b><i class="fas fa-key"></i> Repeat Password</b></label>
+    <div id="psw-container" style="width: 100%">
+        {{ form.psw2(size=32) }}
+        <i class="far fa-eye" id="togglePassword2" style="margin-left: -30px; cursor: pointer;"></i>
+    </div>
+    {% for error in form.psw2.errors %}
+    <div class="error">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+    {% endfor %}
 
     <div style="width: 100%; align-self: center; justify-content: center;" id="form-options">
-        <label><input style type="checkbox" name="remember" name="logged-in"> By signing up, I agree to the <a href="#TODO: Add link to terms and conditions" class='link-underline' style="font-weight: 600;">terms and conditions</a> and <a href="#TODO: Add link to privacy policy" class='link-underline' style="font-weight: 600;">the privacy policy</a>.</label>
+        <label>{{ form.agreement() }} By signing up, I agree to the <a href="#TODO: Add link to terms and conditions" class='link-underline' style="font-weight: 600;">terms and conditions</a> and <a href="#TODO: Add link to privacy policy" class='link-underline' style="font-weight: 600;">the privacy policy</a>.</label>
     </div>
     
-    <!-- TODO: Define Submit button's onclick() action, if any. -->
-    <button type="submit" class="dark-btn" style="width: 50%; align-self: center;"><i class="fas fa-user-plus"></i> Register</button>
+    {{ form.submit() }} 
 
     <p style="align-self: center; margin-top: 10px;">Already registered with Curabit? <a href="TODO: Add link to log in" class='link-underline' style="font-weight: 500;">Log in!</a></p>
     

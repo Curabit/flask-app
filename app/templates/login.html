@@ -4,23 +4,44 @@
 {% block heading %}Log In{% endblock %}
 
 {% block content %}
-<form id='login_details' action="#TODO: Define Form Action" method="POST">
-    <label for="email" style="align-self: flex-start;"><b><i class="fas fa-envelope"></i> Registered Email</b></label>
-    <input type="email" placeholder="Enter Email" name="email" required style="width: 100%; align-self: flex-start;">
+<form method="post" novalidate>
+    {{ form.hidden_tag() }}
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="error">
+                <i class="fas fa-exclamation-circle"></i> {{ message }}
+            </div>
+            {% endfor %}
+    {% endif %}
+    {% endwith %}
 
+    <label for="email" style="align-self: flex-start;"><b><i class="fas fa-envelope"></i> Email Address</b></label>
+    {{ form.email(size=70) }}
+    {% for error in form.email.errors %}
+        <div class="error">
+            <i class="fas fa-exclamation-circle"></i> [{{ error }}]
+        </div>
+    {% endfor %}
+    
     <label for="psw" style="align-self: flex-start;"><b><i class="fas fa-key"></i> Password</b></label>
-    <div>
-        <input type="password" placeholder="Enter Password" id='psw' name="psw" autocomplete="current-password" required style="width: 100%; align-self: flex-start;">
+    <div id="psw-container" style="width: 100%">
+        {{ form.psw(size=32) }}
         <i class="far fa-eye" id="togglePassword" style="margin-left: -30px; cursor: pointer;"></i>
     </div>
+    {% for error in form.psw.errors %}
+    <div class="error">
+        <i class="fas fa-exclamation-circle"></i> [{{ error }}]
+    </div>
+    {% endfor %}
 
     <div style="width: 80%; align-self: center; justify-content: space-between;" id="form-options">
-        <label><input type="checkbox" checked="checked" name="remember" name="logged-in"> Keep me logged in</label>
+        <span>{{ form.remember_me() }} {{ form.remember_me.label }}</span>
         <a href="TODO: Add link to forgot password" class="link-underline">Forgot password?</a>
     </div>
     
-    <!-- TODO: Define Submit button's onclick() action, if any. -->
-    <button type="submit" class="dark-btn" style="width: 50%; align-self: center;"><i class="fas fa-unlock"></i> Login</button>
+    {{ form.submit() }} 
 
     <p style="align-self: center; margin-top: 10px;">Are you a therapist not registered with Curabit yet? <a href="TODO: Add link to register therapist" class='link-underline' style="font-weight: 500;">Register now!</a></p>
     

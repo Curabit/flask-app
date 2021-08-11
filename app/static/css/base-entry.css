@@ -86,6 +86,7 @@ form label {
     font-weight: 300;
     font-size: 14px;
     margin-bottom: 5px;
+    align-self: flex-start;
 }
 
 form input  {
@@ -94,6 +95,21 @@ form input  {
     padding: 5px 5px 5px 5px;
     font-family: 'Roboto Slab', serif;
     font-size: 15px;
+}
+
+form input [type="email"] {
+    width: 100%;
+    align-self: flex-start;
+}
+
+form input [type="text"] {
+    width: 100%;
+    align-self: flex-start;
+}
+
+form #psw-container input {
+    width: 100%;
+    align-self: flex-start;
 }
 
 #form-options {
@@ -110,6 +126,17 @@ form input  {
     margin: 0;
 }
 
+.error {
+    width: 98%;
+    align-self: flex-start;
+    margin: 0px 0px 15px 0px;
+    padding: 5px;
+    font-size: 12px;
+    border: 1px solid var(--red-accent-1);
+    color: var(--red-accent-1);
+    border-radius: 5px;
+}
+
 .dark-btn {
     font-size: 16px;
     font-weight: 500;
@@ -119,6 +146,8 @@ form input  {
     border: 1px solid var(--white-shade);
     border-radius: 5px;
     cursor: pointer;
+    width: 50%;
+    align-self: center;
 }
 
 .dark-btn:hover {
