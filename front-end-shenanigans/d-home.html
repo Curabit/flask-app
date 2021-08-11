@@ -1,0 +1,96 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-Style-Type" content="text/css">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+
+        <title>Dashboard | Console by Curabit</title>
+        <link rel="shortcut icon" type="image/ico" href="{{ url_for('static',filename='assets/favicon.png') }}" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
+
+        <link href="dashboard.css" rel="stylesheet" type="text/css" />
+    </head>
+    <body>
+        <header class='divided-row'>
+            <div class="left-side">
+                <h1>{{ current_user.th_name }}'s Console</h1>
+            </div>
+            <div class='right-side'>
+                <a href="#TODO: Add link to settings" class='btn light-btn'><i class="fas fa-cog"></i> Settings</a>
+                <a href="#TODO: Add link to logout" class='btn red-btn'><i class="fas fa-power-off"></i> Logout</a>
+            </div>
+        </header>
+        <main>
+            <div class="page-headline centered-row">
+                <h2>Your Dashboard</h2>
+            </div>
+            <div class='section' id='clients'>
+                <div class="section-heading divided-row">
+                    <div class="left-side">
+                        <h3>Clients</h3>
+                    </div>
+                    <div class="right-side">
+                        <p>Click on a client to proceed</p>
+                        <!-- TODO: Something here -->
+                    </div>
+                </div>
+                <div class="card-container" style="color: var(--color1-tint5);">
+                    <div class="card" style="background-color: var(--red-accent);">
+                        <h4>Rishabh Nanawati</h4>
+                        <div>
+                            <h5>Male, 22 years</h5>
+                            <p>Last session on 27 Aug 2021</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h4>Aman Sariya</h4>
+                        <div>
+                            <h5>Male, 21 years</h5>
+                            <p>Last session on 27 Aug 2021</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h4>Isha Nagpal</h4>
+                        <div>
+                            <h5>Female, 21 years</h5>
+                            <p>Last session on 27 Aug 2021</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h4>Vedika Jogani</h4>
+                        <div>
+                            <h5>Female, 21 years</h5>
+                            <p>Last session on 27 Aug 2021</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h4>Rishabh Bajaj</h4>
+                        <div>
+                            <h5>Male, 22 years</h5>
+                            <p>Last session on 27 Aug 2021</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h4>Nishtha G.</h4>
+                        <div>
+                            <h5>Female, 22 years</h5>
+                            <p>Last session on 27 Aug 2021</p>
+                        </div>
+                    </div>
+                    <div class="card" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                        <i class="fas fa-plus-circle" style="font-size: 64px"></i>
+                        <h4>Add client</h4>
+                    </div>
+                </div>
+            </div>
+        </main>
+         <!-- <footer>
+                <p>Need help? Shoot us an email at <a href='mailto:app-support@curabit.in' class='link-underline'>app-support@curabit.in</a></p>
+        </footer> -->
+    </body>
+</html>
