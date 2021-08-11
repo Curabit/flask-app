@@ -75,12 +75,12 @@ togglePassword2.addEventListener('click', function (e) {
     {% endfor %}
 
     <div style="width: 100%; align-self: center; justify-content: center;" id="form-options">
-        <label>{{ form.agreement() }} By signing up, I agree to the <a href="#TODO: Add link to terms and conditions" class='link-underline' style="font-weight: 600;">terms and conditions</a> and <a href="#TODO: Add link to privacy policy" class='link-underline' style="font-weight: 600;">the privacy policy</a>.</label>
+        <label>{{ form.agreement() }} By signing up, I agree to the <a href="#TODO: Add link to terms and conditions" class='link-underline' style="font-weight: 600;">terms and conditions</a> and the <a href="#TODO: Add link to privacy policy" class='link-underline' style="font-weight: 600;">privacy policy</a>.</label>
     </div>
     
     {{ form.submit() }} 
 
-    <p style="align-self: center; margin-top: 10px;">Already registered with Curabit? <a href="TODO: Add link to log in" class='link-underline' style="font-weight: 500;">Log in!</a></p>
+    <p style="align-self: center; margin-top: 10px;">Already registered with Curabit? <a href="{{ url_for('login') }}" class='link-underline' style="font-weight: 500;">Log in!</a></p>
     
 </form>
 {% endblock %}

@@ -57,6 +57,8 @@ main {
     The units used by the flex-basis property are the same as other size properties (px, em, %, etc.). The value auto sizes items based on the content. */
 
     flex: 1 0 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -129,11 +131,22 @@ form #psw-container input {
 .error {
     width: 98%;
     align-self: flex-start;
-    margin: 0px 0px 15px 0px;
+    margin: 15px 0px 15px 0px;
     padding: 5px;
     font-size: 12px;
     border: 1px solid var(--red-accent-1);
     color: var(--red-accent-1);
+    border-radius: 5px;
+}
+
+.notice {
+    width: 98%;
+    align-self: flex-start;
+    margin: 0px 0px 15px 0px;
+    padding: 5px;
+    font-size: 12px;
+    border: 1px solid var(--green-accent-1);
+    color: var(--green-accent-1);
     border-radius: 5px;
 }
 

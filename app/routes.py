@@ -1,14 +1,27 @@
 from flask import render_template, flash, redirect, jsonify, url_for, request
 from app import app
-from app.forms import LoginForm, RegisterForm
-from app.models import User
+from app.forms import LoginForm, RegisterForm, ForgotPasswordForm, newClient
+from app.models import User, Client
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
-@app.route('/')
+@app.route('/dashboard')
 @login_required
-def index():
-    return render_template('index.html')
+def dashboard():
+    clients = Client.objects(th_id=current_user._id)
+    return render_template('dashboard.html', clients=clients)
+
+@app.route('/forgot-password', methods=["GET", "POST"])
+def forgotpsw():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    else:
+        form = ForgotPasswordForm()
+        if form.validate_on_submit():
+            flash("An email has been sent to the given email ID.")
+            return redirect(url_for('login'))
+        return render_template("forgotpsw.html", form=form)
+
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -21,11 +34,14 @@ def register():
         user.set_hash(psw=form.psw.data)
         user.save()
         login_user(user)
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
+@app.route('/')
 @app.route('/login', methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.objects(email=form.email.data).first()
@@ -52,7 +68,8 @@ def login():
 
             next_page = request.args.get('next')
             if not next_page or url_parse(next_page).netloc != '':
-                next_page = url_for('index')
+                next_page = url_for('dashboard')
+                return redirect(next_page)
             else:
                 return redirect(next_page)
     return render_template('login.html', form=form)
@@ -60,4 +77,18 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
+
+@app.route('/account')
+def settings():
+    return ""
+
+@app.route('/add-client', methods=["GET", "POST"])
+def add_client():
+    form = newClient()
+    if form.validate_on_submit():
+        client = Client()
+        client.register(th_id=current_user._id, clnt_name=form.clnt_name.data, gender=form.gender.data, age=form.age.data)
+        client.save()
+        return redirect(url_for('dashboard'))
+    return render_template('add-client.html', form=form)

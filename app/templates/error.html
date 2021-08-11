@@ -62,26 +62,6 @@
                 font-size: 20px;
             }
 
-            button {
-                margin: 10px 0px 10px 0px;
-                font-family: "Roboto Slab", serif;
-                font-size: 24px;
-                font-weight: 500;
-                padding: 5px 15px 5px 15px;
-                background-color: #03256c;
-                color: #FBFBFB;
-                border: 1px solid #FBFBFB;
-                border-radius: 5px;
-                cursor: pointer;
-                width: 50%;
-            }
-
-            button:hover {
-                background-color: #FBFBFB;
-                color: #03256c;
-                border: 1px solid #03256c;
-            }
-
             #error_svg {
                 margin: 0;
                 width: 40%;
@@ -100,6 +80,28 @@
                 width: auto;
             }
 
+            .dark-btn {
+                margin: 10px 0px 10px 0px;
+                font-family: "Roboto Slab", serif;
+                font-size: 24px;
+                font-weight: 500;
+                padding: 5px 15px 5px 15px;
+                background-color: #03256c;
+                color: #FBFBFB;
+                border: 1px solid #FBFBFB;
+                border-radius: 5px;
+                cursor: pointer;
+                width: 50%;
+                text-align: center;
+                text-decoration: none;
+            }
+
+            .dark-btn:hover {
+                background-color: #FBFBFB;
+                color: #03256c;
+                border: 1px solid #03256c;
+            }
+
         </style>
         
     </head>
@@ -110,11 +112,13 @@
             <h1>Oops!</h1>
             <h2>{{ e.code }}: {{ e.name }}</h2>
             <p>{{ e.description }}</p>
-            <button href="/">Return to Home</button>
+            <a class="dark-btn" href="{{ url_for('login') }}">Return to Home</a>
         </div>
     </main>
     <footer style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <a href="https://www.curabit.in/"><img src="{{ url_for('static',filename='assets/logo_wo_taglin.svg') }}" alt="Curabit's Logo" id="logo"/></a>
+        <br>
+        <p style="font-size: 16px;">Need help? Shoot us an email at <a href='mailto:app-support@curabit.in' class='link-underline'>app-support@curabit.in</a></p>
         <br>
         <a href="https://www.storyset.com/" style="color: black; margin-top: 10px; font-family: 'Roboto Slab', serif; font-size: 14px;">Illustration by StorySet</a>
     </footer>

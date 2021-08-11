@@ -38,12 +38,12 @@
 
     <div style="width: 80%; align-self: center; justify-content: space-between;" id="form-options">
         <span>{{ form.remember_me() }} {{ form.remember_me.label }}</span>
-        <a href="TODO: Add link to forgot password" class="link-underline">Forgot password?</a>
+        <a href="{{ url_for('forgotpsw') }}" class="link-underline">Forgot password?</a>
     </div>
     
     {{ form.submit() }} 
 
-    <p style="align-self: center; margin-top: 10px;">Are you a therapist not registered with Curabit yet? <a href="TODO: Add link to register therapist" class='link-underline' style="font-weight: 500;">Register now!</a></p>
+    <p style="align-self: center; margin-top: 10px;">Are you a therapist not registered with Curabit yet? <a href="{{ url_for('register') }}" class='link-underline' style="font-weight: 500;">Register now!</a></p>
     
 </form>
 {% endblock %}

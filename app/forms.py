@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField, IntegerField
 from wtforms.validators import InputRequired, Email, EqualTo, ValidationError
 from wtforms.fields.html5 import EmailField
 from app.models import User
@@ -25,3 +25,18 @@ class RegisterForm(FlaskForm):
         user = User.objects(email=email.data).first()
         if user is not None:
             raise ValidationError('This email ID is already registered.')
+
+class ForgotPasswordForm(FlaskForm):
+    email = EmailField(validators=[InputRequired(), Email()])
+    submit = SubmitField(label="Send Password Reset Instructions", render_kw={"class": "dark-btn"})
+
+    def validate_email(self, email):
+        user = User.objects(email=email.data).first()
+        if user is None:
+            raise ValidationError('This email ID has not been registered with us.')
+
+class newClient(FlaskForm):
+    clnt_name = StringField(validators=[InputRequired()])
+    gender = SelectField(choices=[('Male','Male'),('Female','Female'),("None", 'Do not wish to disclose')], validators=[InputRequired()])
+    age = IntegerField(validators=[InputRequired()])
+    submit = SubmitField(label="Add Client", render_kw={"class": "btn dark-btn"})

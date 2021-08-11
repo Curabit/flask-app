@@ -1,7 +1,6 @@
 import random
 import string
 from datetime import datetime
-from typing_extensions import Required
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import login
@@ -12,23 +11,23 @@ class Client(db.Document):
     meta = {"collection": "clients"}
     _id = db.StringField(primary_key=True)
     th_id = db.StringField(required=True)
-    pt_name = db.StringField(required=True)
+    clnt_name = db.StringField(required=True)
     gender = db.StringField()
     age = db.StringField()
     regDate = db.StringField()
     lastUsed = db.StringField()
 
-    def register(self, th_id, pt_name, gender, age, id=None):
+    def register(self, th_id, clnt_name, gender, age, id=None):
         if id is None:
             self._id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)])
         else:
             self._id = id
         self.th_id = th_id
-        self.pt_name = pt_name
-        self.gender = gender
-        self.age = age
+        self.clnt_name = clnt_name
+        self.gender =  gender if gender!="None" else ""
+        self.age = str(age)
         self.regDate = datetime.utcnow().strftime("%d-%m-%Y %H:%M:%S")
-        self.lastUsed = self.regDate[:]
+        self.lastUsed = ""
 
 class User(UserMixin, db.Document):
     meta = {'collection': 'users'}
