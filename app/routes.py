@@ -4,7 +4,6 @@ from app.forms import LoginForm, RegisterForm
 from app.models import User
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
-from werkzeug.exceptions import InternalServerError, MethodNotAllowed
 
 @app.route('/')
 @login_required
@@ -62,11 +61,3 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
-
-@app.route("/500")
-def t500():
-    raise InternalServerError()
-
-@app.route("/405")
-def t405():
-    raise MethodNotAllowed()
