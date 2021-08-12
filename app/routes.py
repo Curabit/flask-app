@@ -118,3 +118,36 @@ def view_client(clientId):
         flash("You cannot access this client.")
         redirect(url_for('dashboard'))
     return render_template('client-view.html', client=client)
+
+@app.route("/api/json", methods=["POST","GET"])
+def serve_json():
+    pass
+
+
+# @app.route("/api/test/get-json", methods=['GET','POST'])
+# def test_get_json():
+#     data = {
+#     'isStop': False,
+# 	'current': {
+# 		'file-name': 'current-video',
+# 		'isOnLoop': True
+# 		},
+#     'total-count': 4,
+#     'next': [{
+# 		'file-name': 'next-video-1',
+# 		'isOnLoop': True
+# 		},
+# 		{
+# 		'file-name': 'next-video-2',
+# 		'isOnLoop': False
+# 		},
+# 		{
+# 		'file-name': 'next-video-3',
+# 		'isOnLoop': False
+# 		}],
+# 	'previous': {
+# 		'file-name': 'previous-video',
+# 		'isOnLoop': False
+# 		}
+#     }
+#     return jsonify(data)
