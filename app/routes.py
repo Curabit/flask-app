@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, jsonify, url_for, request
 from app import app
 from datetime import datetime
 from app.forms import LoginForm, RegisterForm, ForgotPasswordForm, newClient, editDetailsForm
-from app.models import User, Client
+from app.models import User, Client, testJSON
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
@@ -121,33 +121,42 @@ def view_client(clientId):
 
 @app.route("/api/json", methods=["POST","GET"])
 def serve_json():
-    pass
+    if request.method=="POST":
+        test_obj = testJSON.objects().first()
+        if test_obj is not None:
+            test_obj.delete()
+        body = request.get_json()
+        test_obj = testJSON(**body).save()
+        return jsonify(test_obj), 201
+    else:
+        test_obj = testJSON.objects().first()
+        return jsonify(test_obj), 200
 
 
 # @app.route("/api/test/get-json", methods=['GET','POST'])
 # def test_get_json():
-#     data = {
-#     'isStop': False,
-# 	'current': {
-# 		'file-name': 'current-video',
-# 		'isOnLoop': True
-# 		},
-#     'total-count': 4,
-#     'next': [{
-# 		'file-name': 'next-video-1',
-# 		'isOnLoop': True
-# 		},
-# 		{
-# 		'file-name': 'next-video-2',
-# 		'isOnLoop': False
-# 		},
-# 		{
-# 		'file-name': 'next-video-3',
-# 		'isOnLoop': False
-# 		}],
-# 	'previous': {
-# 		'file-name': 'previous-video',
-# 		'isOnLoop': False
-# 		}
-#     }
+    # data = {
+    # 'isStop': False,
+	# 'current': {
+	# 	'file-name': 'current-video',
+	# 	'isOnLoop': True
+	# 	},
+    # 'total-count': 4,
+    # 'next': [{
+	# 	'file-name': 'next-video-1',
+	# 	'isOnLoop': True
+	# 	},
+	# 	{
+	# 	'file-name': 'next-video-2',
+	# 	'isOnLoop': False
+	# 	},
+	# 	{
+	# 	'file-name': 'next-video-3',
+	# 	'isOnLoop': False
+	# 	}],
+	# 'previous': {
+	# 	'file-name': 'previous-video',
+	# 	'isOnLoop': False
+	# 	}
+    # }
 #     return jsonify(data)
