@@ -87,6 +87,9 @@ class Usage(db.Document):
         super().__init__(*args, **values)
         self.timestamp = datetime.utcnow().strftime("%d-%m-%Y %H:%M:%S")
 
+class testJSON(db.DynamicDocument):
+    pass
+
 @login.user_loader
 def load_user(_id):
     return User.objects(pk=_id).first()
