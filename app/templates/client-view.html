@@ -1,0 +1,87 @@
+{% extends "base-dashboard.html" %}
+
+{% block title %}View Account{% endblock %}
+
+{% block head_attachments %}
+<style>
+#details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h4 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+h5 {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.sub-card-container {
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.sub-card {
+    width: 100%;
+    margin: 5px 0px 5px 0px;
+    padding: 5px;
+    border: 1px solid var(--primary-accent);
+    border-radius: 5px;
+}
+
+</style>
+{% endblock %}
+
+{% block imp_button %}
+<a href="{{ url_for('dashboard') }}" class='btn light-btn'><i class="fas fa-door-open"></i> Dashboard</a>
+{% endblock %}
+
+{% block headline %}Client Details{% endblock %}
+
+{% block maincontent %}
+<div class="section" id='details'>
+    <div class="section-heading divided-row">
+        <div class="left-side">
+            <h3 style="font-size: 22px; font-weight: 500;">Here's what we know about <span style="font-weight: 600;">{{ client.clnt_name }}</span></h3>
+        </div>
+        <div class='right-side'>
+            <a href="#TODO" class='btn light-btn'><i class="fas fa-edit"></i> Edit Details</a>
+            <a href="#TODO" class='btn dark-btn'><i class="fas fa-play-circle"></i> Start Session</a>
+        </div>
+    </div>
+    <div class="sub-card-container">
+        <div class="sub-card">
+            <h5><i class="fas fa-id-card"></i> Client Name</h5>
+            <h4>{{ client.clnt_name }}</h4>
+        </div>
+        <div class="sub-card">
+            <h5><i class="fas fa-envelope"></i> Gender</h5>
+            {% if client['gender'] == "" %}
+                    <h4>Not specified</h4>
+            {% else %}
+                <h4>{{ client['gender'] }}</h4>
+            {% endif %}
+        </div>
+        <div class="sub-card">
+            <h5><i class="fas fa-clinic-medical"></i> Age</h5>
+            <h4>{{ client['age']}}</h4>
+        </div>
+        <div class="sub-card">
+            <h5><i class="fas fa-map-marked-alt"></i> Last Session</h5>
+            {% if client['lastUsed']=="" %}
+                <h4>No sessions tried yet.</h4>    
+            {% else %}
+                <h4>Last session on {{ client['lastUsed'] }}</h4>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

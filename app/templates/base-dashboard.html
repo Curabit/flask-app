@@ -23,7 +23,7 @@
                 <h1>{{ current_user.th_name }}'s Console</h1>
             </div>
             <div class='right-side'>
-                <a href="{{ url_for('settings') }}" class='btn light-btn'><i class="fas fa-cog"></i> Account</a>
+                {% block imp_button %}{% endblock %}
                 <a href="{{ url_for('logout') }}" class='btn red-btn'><i class="fas fa-power-off"></i> Logout</a>
             </div>
         </header>

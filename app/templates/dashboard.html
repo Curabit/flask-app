@@ -57,12 +57,37 @@ table, td, th {
     border: 1px solid var(--primary-accent);
     border-collapse: collapse;
 }
+
+.message {
+    width: 98%;
+    margin: 15px 0px 15px 0px;
+    padding: 5px;
+    font-size: 12px;
+    border: 1px solid var(--primary-accent);
+    color: var(--primary-accent);
+    border-radius: 5px;
+}
 </style>
+{% endblock %}
+
+{% block imp_button %}
+<a href="{{ url_for('view_account') }}" class='btn light-btn'><i class="fas fa-cog"></i> Account</a>
 {% endblock %}
 
 {% block headline %}Your Dashboard{% endblock %}
 
 {% block maincontent %}
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+        <div class="message">
+            <i class="fas fa-exclamation-circle"></i> {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
 <div class='section' id='clients'>
     <div class="section-heading divided-row">
         <div class="left-side">
@@ -76,7 +101,7 @@ table, td, th {
     <!-- <div class="card-container" style="color: #FFF8F0;"> -->
     <div class="card-container">
         {% for client in clients %}
-        <a href="#" class="card">
+        <a href="{{ url_for('view_client', clientId=client['_id']) }}" class="card">
             <h4>{{ client['clnt_name'] }}</h4>
             <div>
                 {% if client['gender'] == "" %}
