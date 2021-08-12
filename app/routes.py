@@ -1,27 +1,10 @@
 from flask import render_template, flash, redirect, jsonify, url_for, request
 from app import app
-from app.forms import LoginForm, RegisterForm, ForgotPasswordForm, newClient
+from datetime import datetime
+from app.forms import LoginForm, RegisterForm, ForgotPasswordForm, newClient, editDetailsForm
 from app.models import User, Client
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
-
-@app.route('/dashboard')
-@login_required
-def dashboard():
-    clients = Client.objects(th_id=current_user._id)
-    return render_template('dashboard.html', clients=clients)
-
-@app.route('/forgot-password', methods=["GET", "POST"])
-def forgotpsw():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    else:
-        form = ForgotPasswordForm()
-        if form.validate_on_submit():
-            flash("An email has been sent to the given email ID.")
-            return redirect(url_for('login'))
-        return render_template("forgotpsw.html", form=form)
-
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -37,7 +20,7 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
-@app.route('/')
+@app.route('/', methods=["GET", "POST"])
 @app.route('/login', methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
@@ -74,16 +57,37 @@ def login():
                 return redirect(next_page)
     return render_template('login.html', form=form)
 
+
+@app.route('/forgot-password', methods=["GET", "POST"])
+def forgotpsw():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    else:
+        form = ForgotPasswordForm()
+        if form.validate_on_submit():
+            flash("An email has been sent to the given email ID.")
+            return redirect(url_for('login'))
+        return render_template("forgotpsw.html", form=form)
+
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
-@app.route('/account')
-def settings():
-    return ""
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    clients = Client.objects(th_id=current_user._id)
+    return render_template('dashboard.html', clients=clients)
+
+@app.route('/view-account')
+@login_required
+def view_account():
+    return render_template('account-view.html')
 
 @app.route('/add-client', methods=["GET", "POST"])
+@login_required
 def add_client():
     form = newClient()
     if form.validate_on_submit():
@@ -92,3 +96,58 @@ def add_client():
         client.save()
         return redirect(url_for('dashboard'))
     return render_template('add-client.html', form=form)
+
+@app.route('/edit-account', methods=["GET", "POST"])
+@login_required
+def edit_account():
+    form = editDetailsForm()
+    if form.validate_on_submit():
+        current_user.update(th_name = form.th_name.data, clinic_name = form.clinic_name.data, clinic_add = form.clinic_add.data, email=form.email.data)
+        return redirect(url_for('view_account'))
+    form.th_name.data = current_user.th_name
+    form.clinic_name.data = current_user.clinic_name
+    form.clinic_add.data = current_user.clinic_add
+    form.email.data = current_user.email
+    return render_template('account-edit.html', form=form)
+
+@app.route('/view-client/<clientId>')
+@login_required
+def view_client(clientId):
+    client = Client.objects(_id=clientId).first()
+    if client.th_id!=current_user._id:
+        flash("You cannot access this client.")
+        redirect(url_for('dashboard'))
+    return render_template('client-view.html', client=client)
+
+@app.route("/api/json", methods=["POST","GET"])
+def serve_json():
+    pass
+
+
+# @app.route("/api/test/get-json", methods=['GET','POST'])
+# def test_get_json():
+#     data = {
+#     'isStop': False,
+# 	'current': {
+# 		'file-name': 'current-video',
+# 		'isOnLoop': True
+# 		},
+#     'total-count': 4,
+#     'next': [{
+# 		'file-name': 'next-video-1',
+# 		'isOnLoop': True
+# 		},
+# 		{
+# 		'file-name': 'next-video-2',
+# 		'isOnLoop': False
+# 		},
+# 		{
+# 		'file-name': 'next-video-3',
+# 		'isOnLoop': False
+# 		}],
+# 	'previous': {
+# 		'file-name': 'previous-video',
+# 		'isOnLoop': False
+# 		}
+#     }
+#     return jsonify(data)

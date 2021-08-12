@@ -74,6 +74,10 @@ form input [type="text"] {
 </style>
 {% endblock %}
 
+{% block imp_button %}
+<a href="{{ url_for('dashboard') }}" class='btn light-btn'><i class="fas fa-door-open"></i> Dashboard</a>
+{% endblock %}
+
 {% block headline %}Add New Client{% endblock %}
 
 {% block maincontent %}

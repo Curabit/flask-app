@@ -148,6 +148,16 @@ header {
     height: 50px;
 }
 
+.error {
+    width: 98%;
+    margin: 15px 0px 15px 0px;
+    padding: 5px;
+    font-size: 12px;
+    border: 1px solid var(--red-accent);
+    color: var(--red-accent);
+    border-radius: 5px;
+}
+
 .message {
     width: 98%;
     margin: 15px 0px 15px 0px;

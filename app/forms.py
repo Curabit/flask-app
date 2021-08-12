@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField, IntegerField
 from wtforms.validators import InputRequired, Email, EqualTo, ValidationError
 from wtforms.fields.html5 import EmailField
+from flask_login import current_user
 from app.models import User
 
 class LoginForm(FlaskForm):
@@ -40,3 +41,15 @@ class newClient(FlaskForm):
     gender = SelectField(choices=[('Male','Male'),('Female','Female'),("None", 'Do not wish to disclose')], validators=[InputRequired()])
     age = IntegerField(validators=[InputRequired()])
     submit = SubmitField(label="Add Client", render_kw={"class": "btn dark-btn"})
+
+class editDetailsForm(FlaskForm):
+    th_name = StringField(validators=[InputRequired()])
+    clinic_name = StringField(validators=[InputRequired()])
+    clinic_add = TextAreaField(validators=[InputRequired()])
+    email = EmailField(validators=[InputRequired(), Email()])
+    submit = SubmitField(label="Save", render_kw={"class": "btn dark-btn"})
+
+    def validate_email(self, email):
+        user = User.objects(email=email.data).first()
+        if user is not None and user.email != current_user.email:
+            raise ValidationError('This email ID is already registered.')
