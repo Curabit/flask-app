@@ -16,7 +16,7 @@ def register():
         user.register(th_name=form.th_name.data, clinic_name=form.clinic_name.data, clinic_add=form.clinic_add.data, email=form.email.data)
         user.set_hash(psw=form.psw.data)
         user.save()
-        login_user(user)
+        # login_user(user)
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
@@ -33,6 +33,9 @@ def login():
             return redirect(url_for('login'))
         elif not (user.check_hash(user,psw=form.psw.data)):
             flash('Invalid password.')
+            return redirect(url_for('login'))
+        elif not (user.isVerified):
+            flash('Your ID has not been verified by Curabit yet.')
             return redirect(url_for('login'))
         else:
             login_user(user, remember=form.remember_me.data)
