@@ -16,6 +16,7 @@ def register():
         user.register(th_name=form.th_name.data, clinic_name=form.clinic_name.data, clinic_add=form.clinic_add.data, email=form.email.data)
         user.set_hash(psw=form.psw.data)
         user.save()
+        flash('Your details will now be verified by Curabit. We send you an email when your account is ready.')
         # login_user(user)
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
