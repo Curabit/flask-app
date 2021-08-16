@@ -6,4 +6,4 @@ This is the server application that will be hosted on [app.curabit.in](https://a
 For feature requests, please submit them as an issue with the "enhancements" label via the [issue tab](https://github.com/Curabit/flask-app/issues).
 
 #### We would like to make this project open-source but maybe once after we've mastered project management ourselves?
-So till then, (C) Curabit 2021
+So till then, © Curabit 2021
