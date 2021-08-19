@@ -19,7 +19,7 @@ class RegisterForm(FlaskForm):
     # TODO: Add password validation
     psw = PasswordField(validators=[InputRequired()], id='psw')
     psw2 = PasswordField(validators=[InputRequired(), EqualTo(fieldname='psw', message="Passwords do not match.")], id='psw2')
-    agreement = BooleanField(validators=[InputRequired()])
+    agreement = BooleanField(validators=[InputRequired("You cannot sign up unless you accept.")])
     submit = SubmitField(label="Sign Up", render_kw={"class": "dark-btn"})
 
     def validate_email(self, email):
@@ -29,7 +29,7 @@ class RegisterForm(FlaskForm):
 
 class ForgotPasswordForm(FlaskForm):
     email = EmailField(validators=[InputRequired(), Email()])
-    submit = SubmitField(label="Send Password Reset Instructions", render_kw={"class": "dark-btn"})
+    submit = SubmitField(label="Send Password Reset Instructions", render_kw={"class": "dark-btn", "style": "width: 50%;"})
 
     def validate_email(self, email):
         user = User.objects(email=email.data).first()

@@ -36,6 +36,7 @@ class User(UserMixin, db.Document):
     th_name = db.StringField(required=True)
     clinic_name = db.StringField()
     clinic_add = db.StringField()
+    isVerified = db.BooleanField(required=True)
     email = db.StringField(required=True)
     lastLoggedIn = db.StringField(required=True)
     psw_hash = db.StringField(required=True)
@@ -50,6 +51,7 @@ class User(UserMixin, db.Document):
         self.clinic_add = clinic_add
         self.email = email
         self.regDate = datetime.utcnow().strftime("%d-%m-%Y %H:%M:%S")
+        self.isVerified = False
         self.lastLoggedIn = self.regDate[:]
 
     def log_in(self):
