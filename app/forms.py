@@ -29,7 +29,7 @@ class RegisterForm(FlaskForm):
 
 class ForgotPasswordForm(FlaskForm):
     email = EmailField(validators=[InputRequired(), Email()])
-    submit = SubmitField(label="Send Password Reset Instructions", render_kw={"class": "dark-btn"})
+    submit = SubmitField(label="Send Password Reset Instructions", render_kw={"class": "dark-btn", "style": "width: 50%;"})
 
     def validate_email(self, email):
         user = User.objects(email=email.data).first()
