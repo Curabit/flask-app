@@ -19,7 +19,7 @@ def register():
         flash('Your details will now be verified by Curabit. We send you an email when your account is ready.')
         # login_user(user)
         return redirect(url_for('login'))
-    return render_template('register-new.html', form=form)
+    return render_template('register.html', form=form)
 
 @app.route('/', methods=["GET", "POST"])
 @app.route('/login', methods=["GET", "POST"])
