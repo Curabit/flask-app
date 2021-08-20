@@ -76,6 +76,10 @@ class User(UserMixin, db.Document):
     def check_hash(self, psw):
         return check_password_hash(self.psw_hash, psw)
 
+class EventLogs(db.EmbeddedDocument):
+    eventTimestamp = db.StringField(required=True)
+    action = db.StringField(required=True)
+
 class Usage(db.Document):
     meta = {"collection": "usage"}
     _id = db.StringField(primary_key=True)
@@ -83,11 +87,17 @@ class Usage(db.Document):
     clnt_id = db.StringField(required=True)
     clnt_name = db.StringField(required=True)
     scenario_id = db.StringField(required=True)
-    timestamp = db.StringField(required=True)
+    event_logs = db.EmbeddedDocumentListField(EventLogs)
+    sessionTimestamp = db.StringField(required=True)
 
     def __init__(self, *args, **values):
         super().__init__(*args, **values)
-        self.timestamp = datetime.utcnow().strftime("%d-%m-%Y %H:%M:%S")
+        self._id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)])
+        self.sessionTimestamp = datetime.utcnow().strftime("%d-%m-%Y %H:%M:%S")
+
+    def addEvent(self, action):
+        timestamp = datetime.utcnow().strftime("%d-%m-%Y %H:%M:%S")
+        self.event_logs.create(eventTimestamp=timestamp, action=action)
 
 class testJSON(db.DynamicDocument):
     pass

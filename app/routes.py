@@ -1,8 +1,9 @@
 from flask import render_template, flash, redirect, jsonify, url_for, request
 from app import app
 from datetime import datetime
+from app.emails import ack_reg
 from app.forms import LoginForm, RegisterForm, ForgotPasswordForm, newClient, editDetailsForm
-from app.models import User, Client, testJSON
+from app.models import User, Client, testJSON, Usage
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
@@ -16,10 +17,11 @@ def register():
         user.register(th_name=form.th_name.data, clinic_name=form.clinic_name.data, clinic_add=form.clinic_add.data, email=form.email.data)
         user.set_hash(psw=form.psw.data)
         user.save()
-        flash('Your details will now be verified by Curabit. We send you an email when your account is ready.')
+        ack_reg(th_email=form.email.data, th_name=form.th_name.data)
+        flash("Your details will now be verified by Curabit. We'll send you an email when your account is ready.")
         # login_user(user)
         return redirect(url_for('login'))
-    return render_template('register-new.html', form=form)
+    return render_template('register.html', form=form)
 
 @app.route('/', methods=["GET", "POST"])
 @app.route('/login', methods=["GET", "POST"])
@@ -164,3 +166,13 @@ def serve_json():
 	# 	}
     # }
 #     return jsonify(data)
+
+
+def beginSession(th_id, clnt_id, scene_id):
+    newUse = Usage(th_id=th_id,clnt_id=clnt_id,scenario_id=scene_id)
+    newUse.save()
+
+def addEvent(sessionId, action):
+    use = Usage.objects(_id=sessionId).first()
+    use.addEvent(action)
+    use.update()

@@ -2,3 +2,4 @@ curabit-docker.code-workspace
 .devcontainer/devcontainer.json
 .flaskenv
 *.pyc
+.env
