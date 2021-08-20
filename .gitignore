@@ -1,1 +1,3 @@
 Dockerfile
+.devcontainer.json
+.env
