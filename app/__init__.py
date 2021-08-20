@@ -6,4 +6,4 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db = MongoEngine(app)
 
-from app import routes, model
+from app import routes, models

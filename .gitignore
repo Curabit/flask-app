@@ -1,3 +1,4 @@
 Dockerfile
 .devcontainer.json
 .env
+*.pyc
