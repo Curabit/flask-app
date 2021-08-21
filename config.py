@@ -6,3 +6,4 @@ class Config(object):
         'db': 'curabit-app',
         'host': os.environ.get('MONGO_URI')
     }
+    SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
