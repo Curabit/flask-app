@@ -1,7 +1,5 @@
-import os
-import json
 from sendgrid.helpers.mail import Mail, From
-from app import sg
+from app import sg, app
 
 def ackSignUp(email, th_name):
     message = Mail(to_emails=email)
@@ -29,6 +27,19 @@ def resetPass(email, th_name, reset_link):
         'reset_link': reset_link
     }
     message.template_id = 'd-8b4bb145b12c40c99b37f8e951934faa'
+    sg.send(message)
+
+def notifyError(e, tr, loggedInAs, ip, ua):
+    message = Mail(to_emails=app.config['ADMINS'])
+    message.from_email = From('console-support@curabit.in', 'Console by Curabit')
+    message.dynamic_template_data = {
+        'e': e,
+        'tr': tr,
+        'loggedInAs': loggedInAs,
+        'ip_add': ip,
+        'user_agent': ua
+    }
+    message.template_id = 'd-192e156c80fa470a873ff577ef991cb6'
     sg.send(message)
 
     

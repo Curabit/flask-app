@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-Style-Type" content="text/css">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+
+        <title>Error {{ e.code }} | Console by Curabit</title>
+        <link rel="shortcut icon" type="image/ico" href="{{ url_for('static',filename='assets/favicon.png') }}" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
+
+        <link href="{{ url_for('static',filename='css/error.css') }}" rel="stylesheet" type="text/css" />
+    </head>
+    <body>
+        <h1>Uh oh!</h1>
+        <img src="{{ url_for('static',filename=fname) }}" alt="Error Image" id="error_svg" />
+        {% if e_type=="HTTPException" %}
+            <h2>{{ e.code }}: {{ e.name }}</h2>
+            <h3>{{ e.description }}</h3>
+        {% else %}
+            <h2>Error encountered!</h2>
+        {% endif %}
+        {% if notifyAdmin==True %}
+            <p>We have notified our tech team about this encounter as well. They are looking into what caused it.</p>
+        {% endif %}
+        <a class="dark-btn" href="{{ url_for('dashboard') }}">Return to Dashboard</a>
+        <p style="font-size: 12px;">For technical queries, email us at <a style="font-size: 12px;" href="mailto:console@curabit.in">console@curabit.in</a> | Illustrations by <a style="font-size: 12px;" href="https://www.storyset.com">StorySet</a></p>
+    </body>
+</html>
