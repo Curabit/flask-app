@@ -42,4 +42,4 @@ def notifyError(e, tr, loggedInAs, ip, ua):
     message.template_id = 'd-192e156c80fa470a873ff577ef991cb6'
     sg.send(message)
 
-    
+#TODO: Send email to admin, asking for verification of therapist
