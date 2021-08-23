@@ -9,7 +9,7 @@ class formLogin(FlaskForm):
     email = EmailField(validators=[InputRequired(), Email()])
     psw = PasswordField(validators=[InputRequired()], id='psw')
     remember_me = BooleanField('Remember Me')
-    submit = SubmitField(label="Sign In", render_kw={"class": "dark-btn"})
+    submit = SubmitField(label="Log In", render_kw={"class": "dark-btn", "style": "width: 50%;"})
 
 class formForgotPassword(FlaskForm):
     email = EmailField(validators=[InputRequired(), Email()])
@@ -23,7 +23,7 @@ class formRegisterTherapist(FlaskForm):
     psw = PasswordField(validators=[InputRequired()], id='psw')
     psw2 = PasswordField(validators=[InputRequired(), EqualTo(fieldname='psw', message="Passwords do not match.")], id='psw2')
     agreement = BooleanField(validators=[InputRequired("You cannot sign up unless you accept.")])
-    submit = SubmitField(label="Sign Up", render_kw={"class": "dark-btn"})
+    submit = SubmitField(label="Register", render_kw={"class": "dark-btn", "style": "width: 50%;"})
 
     def validate_email(self, email):
         user = User.objects(email=email.data).first()
@@ -51,7 +51,7 @@ class formChangePassword(FlaskForm):
 class formResetPassword(FlaskForm):
     new_psw = PasswordField(validators=[InputRequired()], id='new_psw')
     new_psw2 = PasswordField(validators=[InputRequired(), EqualTo(fieldname='new_psw', message="Passwords do not match.")], id='new_psw2')
-    submit = SubmitField(label="Create new Password", render_kw={"class": "btn dark-btn"})
+    submit = SubmitField(label="Create New Password", render_kw={"class": "dark-btn", "style": "width: 50%;"})
 
 class formClient(FlaskForm):
     cl_name = StringField(validators=[InputRequired()])

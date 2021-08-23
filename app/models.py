@@ -13,20 +13,21 @@ import jwt
 
 class User(UserMixin, db.Document):
     meta = {'collection': 'users'}
-    _id = db.StringField(primary_key=True)
+    _id = db.StringField(primary_key=True, 
+    default=''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)]))
     email = db.StringField(required=True)
     psw_hash = db.StringField(required=True)
     name = db.StringField(required=True)
     user_type = db.StringField(required=True, default="therapist")
-    user_details = db.DynamicDocument()
+    user_details = db.DynamicField()
     isVerified = db.BooleanField(required=True, default=False)
     lastLoggedIn = db.DateTimeField()
     created_at = db.DateTimeField(required=True, default=datetime.utcnow())
 
-    def __init__(self, *args, **values):
+    def __init__(self, psw=None, *args, **values):
         super().__init__(*args, **values)
-        self._id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)])
-        self.psw_hash = self.set_hash(args['psw'])
+        if psw is not None:
+            self.set_hash(psw)
     
     def log_in(self):
         self.lastLoggedIn = datetime.utcnow()
@@ -51,18 +52,21 @@ class User(UserMixin, db.Document):
         return check_password_hash(self.psw_hash, psw)
     
     def get_reset_password_token(self, expires_in=600):
-        return jwt.encode(
+        x = jwt.encode(
             {'reset_password': self._id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256')
+        print(x)
+        return x
 
     @staticmethod
     def verify_reset_password_token(token):
         try:
-            _id = jwt.decode(token, app.config['SECRET_KEY'],
-                            algorithms=['HS256'])['reset_password']
-        except:
+            resp = jwt.decode(token, app.config['SECRET_KEY'],
+                            algorithms=['HS256'])
+            _id = resp['reset_password']
+        except Exception as e:
             return
-        return User.objects(pk=_id).first()
+        return User.objects(_id=_id).first()
 
 class Client(db.Document):
     meta = {"collection": "clients"}

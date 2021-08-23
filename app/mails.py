@@ -25,7 +25,7 @@ def resetPass(email, th_name, token):
     message.from_email = From('console-support@curabit.in', 'Console by Curabit')
     message.dynamic_template_data = {
         'th_name': th_name,
-        'reset_link': url_for('reset_password', token=token, _external=True)
+        'reset_link': url_for('resetPassword', token=token, _external=True)
     }
     message.template_id = 'd-8b4bb145b12c40c99b37f8e951934faa'
     sg.send(message)

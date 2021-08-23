@@ -6,7 +6,7 @@ from app.forms import formForgotPassword, formLogin, formRegisterTherapist, form
 from app.models import User
 from flask_login import current_user, login_user
 
-@app.route('/')
+# @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -76,6 +76,7 @@ def forgotPassword():
     form = formForgotPassword()
     if form.validate_on_submit():
         user = User.objects(email=form.email.data).first()
+        print("NAME: "+str(user.name))
         if user is None:
             flash('This email ID is not registered.')
             return redirect(url_for('forgotPassword'))
@@ -95,7 +96,7 @@ def resetPassword(token):
     form = formResetPassword()
     if form.validate_on_submit():
         user.set_hash(form.new_psw.data)
-        user.update()
+        user.save()
         flash('Your password has been reset.')
         return redirect(url_for('login'))
-    return render_template('reset_password.html', form=form)
+    return render_template('reset_psw.html', form=form)
