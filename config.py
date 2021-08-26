@@ -7,4 +7,3 @@ class Config(object):
         'host': os.environ.get('MONGO_URI')
     }
     SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
-    ADMINS = ['rishabh@curabit.in']

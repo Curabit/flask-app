@@ -2,12 +2,9 @@ import random
 import string
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-from app import db
+from app import db, login, app
 from flask_login import UserMixin
-from app import login
 from time import time
-from app import app
-from werkzeug.exceptions import Forbidden
 from app.mails import resetPass
 import jwt
 
@@ -77,8 +74,9 @@ class Client(db.Document):
     _id = db.StringField(primary_key=True)
     th_id = db.StringField(required=True)
     name = db.StringField(required=True)
-    age = db.IntField()
+    age = db.IntField(required=True)
     sex = db.StringField(required=True)
+    lastSession = db.DateField()
 
     def __init__(self, *args, **values):
         super().__init__(*args, **values)

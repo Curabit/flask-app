@@ -1,10 +1,9 @@
-from time import strftime
-from app.mails import ackSignUp, notifySignUp, resetPass
+from app.mails import ackSignUp, approvedSignUp, notifySignUp
 from app import app
 from flask import url_for, redirect, render_template, flash, request
 from werkzeug.urls import url_parse
 from app.forms import formForgotPassword, formLogin, formRegisterTherapist, formResetPassword
-from app.models import User
+from app.models import User, Client
 from flask_login import current_user, login_user, logout_user, login_required
 import datetime as dt
 from datetime import datetime
@@ -13,7 +12,7 @@ from datetime import datetime
 def index():
     if current_user.is_authenticated:
         if current_user.user_type == 'therapist':
-            return redirect(url_for('th_dashboard'))
+            return redirect(url_for('therapist_db'))
         elif current_user.user_type == 'admin':
             return redirect(url_for('admin_db'))
     else:
@@ -124,11 +123,6 @@ def admin_db():
     th_list = User.objects(user_type='therapist')
     return render_template('admin_db.html', ths=th_list)
 
-@app.route('/dashboard', methods=['GET', 'POST'])
-@login_required
-def therapist_db():
-    return render_template('therapist_db.html')
-
 @app.route('/admin_reset_link', methods=['GET'])
 @login_required
 def admin_reset_link():
@@ -165,6 +159,7 @@ def admin_disapprove():
         flash("Could not find therapist.")
     else:
         user.update(isVerified=False)
+        approvedSignUp(user.email, user.name)
         flash(user.name+"'s approval has been revoked.")
     return redirect(url_for(request.args.get('redirect_to')))
 
@@ -180,6 +175,26 @@ def admin_delete():
         #TODO: Add confirmation dialog for deletion
         flash("You cannot afford to delete therapists right now. Scale up, then we'll talk.")
     return redirect(url_for(request.args.get('redirect_to')))
+
+
+@app.route('/dashboard', methods=['GET', 'POST'])
+@login_required
+def therapist_db():
+    cls = Client.objects(th_id=current_user._id)
+    return render_template('therapist_db.html', cls=cls)
+
+@app.route('/th_add_client', methods=['POST'])
+@login_required
+def add_client():
+    if current_user.user_type!='therapist':
+        return redirect(url_for('index'))
+    client = Client(th_id=current_user._id, 
+    name=request.form.get('name'),
+    age=request.form.get('age'),
+    sex=request.form.get('sex'))
+    client.save()
+    flash('Client added successfully.')
+    return redirect(url_for('therapist_db'))
 
 @app.before_request
 def before_request():
