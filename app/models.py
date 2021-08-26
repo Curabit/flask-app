@@ -105,6 +105,9 @@ class Session(db.Document):
         super().__init__(*args, **values)
         self._id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)])
 
+class testJSON(db.DynamicDocument):
+    pass
+
 @login.user_loader
 def load_user(_id):
     return User.objects(pk=_id).first()

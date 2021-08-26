@@ -1,9 +1,9 @@
 from app.mails import ackSignUp, approvedSignUp, notifySignUp
 from app import app
-from flask import url_for, redirect, render_template, flash, request
+from flask import url_for, redirect, render_template, flash, request, jsonify
 from werkzeug.urls import url_parse
 from app.forms import formForgotPassword, formLogin, formRegisterTherapist, formResetPassword
-from app.models import User, Client
+from app.models import User, Client, testJSON
 from flask_login import current_user, login_user, logout_user, login_required
 import datetime as dt
 from datetime import datetime
@@ -195,6 +195,19 @@ def add_client():
     client.save()
     flash('Client added successfully.')
     return redirect(url_for('therapist_db'))
+
+@app.route("/api/json", methods=["POST","GET"])
+def serve_json():
+    if request.method=="POST":
+        test_obj = testJSON.objects().first()
+        if test_obj is not None:
+            test_obj.delete()
+        body = request.get_json()
+        test_obj = testJSON(**body).save()
+        return jsonify(test_obj), 201
+    else:
+        test_obj = testJSON.objects().first()
+        return jsonify(test_obj), 200
 
 @app.before_request
 def before_request():
