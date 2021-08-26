@@ -1,0 +1,100 @@
+<html>
+    <head>
+        <meta charset='UTF-8'>
+        <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+        <meta http-equiv='Content-Style-Type' content='text/css'>
+        <meta name='viewport' content='width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0'>
+
+        <title>Therapist's Dashboard | Console by Curabit</title>
+        <link rel='shortcut icon' type='image/ico' href='./static/assets/favicon.png' />
+
+        <link rel='preconnect' href='https://fonts.googleapis.com' />
+        <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
+        <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.15.4/css/all.css' integrity='sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm' crossorigin='anonymous'>
+        <link href='https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap' rel='stylesheet'> 
+
+        <link href='./static/css/therapist.css' rel='stylesheet' type='text/css' />
+        <script src='./static/js/modal_controls.js'></script>
+    </head>
+    <body>
+        <header class='divided-row'>
+            <div class='row-side-container'>
+                <a href='#TODO' class='link-no-underline'>
+                    <!-- <span style='font-size: 20px; font-family: 'Open Sans', sans-serif; font-weight: 300; display: inline;'>Console of </span>
+                    <h3 style='display: inline; font-size: 20px;'>Rishabh Nanawati</h3> -->
+                    <h3 style='display: inline; font-size: 20px;'>Rishabh Nanawati</h3>
+                    <span style='font-size: 20px; font-family: "Open Sans", sans-serif; font-weight: 300; display: inline;'> | Console</span>
+                </a>
+            </div>
+            <div class='row-side-container'>
+                <a class='btn blue-btn-dark'><i class='fas fa-cog'></i> Settings</a>
+                <a class='btn red-btn-dark'><i class='fas fa-sign-out-alt'></i> Logout</a>
+            </div>
+        </header>
+        <main style='width: 100%;'>
+            <!-- <div class='flashed-msg'>
+                <p style='font-size: 14px;'><i class='fas fa-bell'></i> The given action has been performed.</p>
+            </div> -->
+            <div class='section'>
+                <h1>Clients</h1>
+                <!-- <div id='none-yet'>
+                    <img src='./static/assets/admin_svg/none-yet.svg' id='none-svg' style='height: 350px;'>
+                    <h2>No clients have been added yet.</h2>
+                    <button onclick='modal_load("addClient")' class='btn blue-btn-light' style="font-size: 18px;">Add a client</button>
+                </div> -->
+                <div class='card-container' style='width: 100%;'>
+                    <div class='card divided-row'>
+                        <div class='row-side-container'>
+                            <h3>Aman Sariya</h3>
+                            <span style='font-size: 12px;'>22 Years | Male | Last Session on 27 Aug 2021 09:05 PM</span>    
+                        </div>
+                        <div class='row-side-container'>
+                            <a class='btn blue-btn-dark'>Start Session</a>
+                            <a class='btn red-btn-dark'>Delete Client</a>
+                        </div>
+                    </div>
+                </div>
+                <a class='btn blue-btn-light' style='margin: 5px 0px;'>Add Client</a>
+            </div>
+        </main>
+        <div class='modal' id='addClient'>
+            <div class='modal-window'>
+                <div class='divided-row'>
+                    <div class='row-side-container'>
+                        <h2>Add New Client</h2>
+                    </div>
+                    <div class='row-side-container'>
+                        <button class='btn blue-btn-light close-btn' style='margin: 0px;'><i class='fas fa-times'></i></button>
+                    </div>
+                </div>
+                <form>
+                    <div class='field-container'>
+                        <label for='cl_name'>Name</label>
+                        <input type='text' id='cl_name'>
+                        <div class='error-container red-box'>
+                            <i class='fas fa-exclamation-circle'></i> This is an example of ValidationError.
+                        </div>
+                    </div>
+
+                    <div class='field-container'>
+                        <label for='cl_age'>Age</label>
+                        <input type='text' id='cl_age'>
+                        <div class='error-container red-box'>
+                            <i class='fas fa-exclamation-circle'></i> This is an example of ValidationError.
+                        </div>
+                    </div>
+
+                    <div class='field-container'>
+                        <label for='cl_sex'>Sex</label>
+                        <input type='text' id='cl_sex'>
+                        <div class='error-container red-box'>
+                            <i class='fas fa-exclamation-circle'></i> This is an example of ValidationError.
+                        </div>
+                    </div>
+
+                    <button type='submit' class='btn blue-btn-dark' style='font-size: 14px;'>Add Client</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

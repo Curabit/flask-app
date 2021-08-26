@@ -1,19 +1,28 @@
+from time import strftime
 from app.mails import ackSignUp, notifySignUp, resetPass
 from app import app
 from flask import url_for, redirect, render_template, flash, request
 from werkzeug.urls import url_parse
 from app.forms import formForgotPassword, formLogin, formRegisterTherapist, formResetPassword
 from app.models import User
-from flask_login import current_user, login_user
+from flask_login import current_user, login_user, logout_user, login_required
+import datetime as dt
+from datetime import datetime
 
-# @app.route('/', methods=['GET', 'POST'])
-@app.route('/login', methods=['GET', 'POST'])
-def login():
+@app.route('/', methods=['GET', 'POST'])
+def index():
     if current_user.is_authenticated:
         if current_user.user_type == 'therapist':
             return redirect(url_for('th_dashboard'))
         elif current_user.user_type == 'admin':
-            return redirect(url_for('admin_dashboard'))
+            return redirect(url_for('admin_db'))
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     form = formLogin()
     if form.validate_on_submit():
         user = User.objects(email=form.email.data).first()
@@ -81,7 +90,7 @@ def forgotPassword():
             flash('This email ID is not registered.')
             return redirect(url_for('forgotPassword'))
         else:
-            resetPass(email=user.email, th_name=user.name, token=user.get_reset_password_token())
+            user.send_reset_email()
             flash('An email has been sent to you with instructions on how to reset your password.')
             return redirect(url_for('login'))
     return render_template('forgot_psw.html', form=form)
@@ -89,9 +98,10 @@ def forgotPassword():
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def resetPassword(token):
     if current_user.is_authenticated:
-        return redirect(url_for('login'))
+        return redirect(url_for('index'))
     user = User.verify_reset_password_token(token)
     if not user:
+        flash('Invalid token or token expired.')
         return redirect(url_for('login'))
     form = formResetPassword()
     if form.validate_on_submit():
@@ -100,3 +110,84 @@ def resetPassword(token):
         flash('Your password has been reset.')
         return redirect(url_for('login'))
     return render_template('reset_psw.html', form=form)
+
+@app.route('/logout', methods=['GET', 'POST'])
+@login_required
+def logout():
+    logout_user()
+    flash('You have been successfully logged out.')
+    return redirect(url_for('login'))
+
+@app.route('/admin', methods=['GET', 'POST'])
+@login_required
+def admin_db():
+    th_list = User.objects(user_type='therapist')
+    return render_template('admin_db.html', ths=th_list)
+
+@app.route('/dashboard', methods=['GET', 'POST'])
+@login_required
+def therapist_db():
+    return render_template('therapist_db.html')
+
+@app.route('/admin_reset_link', methods=['GET'])
+@login_required
+def admin_reset_link():
+    if current_user.user_type!='admin':
+        return redirect(url_for('index'))
+    user = User.objects(_id=request.args.get('user_id')).first()
+    if user is None:
+        flash("Could not find therapist.")
+    else:
+        user.send_reset_email()
+        flash('Password Reset Instructions have been mailed.')
+    return redirect(url_for(request.args.get('redirect_to')))
+
+@app.route('/admin_approve', methods=['GET'])
+@login_required
+def admin_approve():
+    if current_user.user_type!='admin':
+        return redirect(url_for('index'))
+    user = User.objects(_id=request.args.get('user_id')).first()
+    if user is None:
+        flash("Could not find therapist.")
+    else:
+        user.update(isVerified=True)
+        flash(user.name+" has been approved.")
+    return redirect(url_for(request.args.get('redirect_to')))
+
+@app.route('/admin_disapprove', methods=['GET'])
+@login_required
+def admin_disapprove():
+    if current_user.user_type!='admin':
+        return redirect(url_for('index'))
+    user = User.objects(_id=request.args.get('user_id')).first()
+    if user is None:
+        flash("Could not find therapist.")
+    else:
+        user.update(isVerified=False)
+        flash(user.name+"'s approval has been revoked.")
+    return redirect(url_for(request.args.get('redirect_to')))
+
+@app.route('/admin_delete', methods=['GET'])
+@login_required
+def admin_delete():
+    if current_user.user_type!='admin':
+        return redirect(url_for('index'))
+    user = User.objects(_id=request.args.get('user_id')).first()
+    if user is None:
+        flash("Could not find therapist.")
+    else:
+        #TODO: Add confirmation dialog for deletion
+        flash("You cannot afford to delete therapists right now. Scale up, then we'll talk.")
+    return redirect(url_for(request.args.get('redirect_to')))
+
+@app.before_request
+def before_request():
+    if current_user.is_authenticated:
+        current_user.update(lastActivity=datetime.utcnow())
+
+@app.template_filter()
+def format_datetime(value):
+    ist_diff = dt.timedelta(hours=5, minutes=30)
+    ist_time = value + ist_diff
+    return ist_time.strftime("%d %B, %Y, %-I:%M:%S %p")

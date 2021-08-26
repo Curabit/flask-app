@@ -65,6 +65,7 @@ h2 {
 
 p {
     font-family: 'Roboto Slab', serif;
+    margin: 15px 0px;
 }
 
 #logo_washed {
@@ -126,7 +127,7 @@ form {
 
 
 label {
-    font-family: 'Lato', 'Helvetica', sans-serif;
+    font-family: 'Open Sans', 'Helvetica', sans-serif;
     font-size: 14px;
     margin: 2px 0px;
 }
@@ -134,7 +135,7 @@ label {
 input[type="text"], input[type="email"], input[type="password"], textarea {
     width: 100%;
     padding: 2.5px;
-    font-family: 'Lato', 'Helvetica', sans-serif;
+    font-family: 'Open Sans', 'Helvetica', sans-serif;
     font-size: 14px;
     margin: 2px 0px;
 }

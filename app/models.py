@@ -8,6 +8,7 @@ from app import login
 from time import time
 from app import app
 from werkzeug.exceptions import Forbidden
+from app.mails import resetPass
 import jwt
 
 
@@ -21,7 +22,7 @@ class User(UserMixin, db.Document):
     user_type = db.StringField(required=True, default="therapist")
     user_details = db.DynamicField()
     isVerified = db.BooleanField(required=True, default=False)
-    lastLoggedIn = db.DateTimeField()
+    lastActivity = db.DateTimeField()
     created_at = db.DateTimeField(required=True, default=datetime.utcnow())
 
     def __init__(self, psw=None, *args, **values):
@@ -57,6 +58,9 @@ class User(UserMixin, db.Document):
             app.config['SECRET_KEY'], algorithm='HS256')
         print(x)
         return x
+
+    def send_reset_email(self):
+        resetPass(email=self.email, th_name=self.name, token=self.get_reset_password_token())
 
     @staticmethod
     def verify_reset_password_token(token):
