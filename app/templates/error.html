@@ -13,114 +13,21 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
 
-        <style>
-            body {
-                padding: 0;
-                margin: 0;
-                min-width: 100vw;
-                max-width: 100vw;
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-            }
-
-            main {
-                width: 100%;
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-            }
-
-
-            h1 {
-                margin: 10px 0px 10px 0px; 
-                font-family: "Open Sans", sans-serif;
-                font-size: 36px;
-                font-weight: 600;
-            }
-
-            h2 {
-                margin: 10px 0px 10px 0px;
-                font-family: "Open Sans", sans-serif;
-                font-size: 28px;
-                font-weight: 500;
-            }
-
-            h3 {
-                margin: 10px 0px 10px 0px;
-                font-family: "Open Sans", sans-serif;
-                font-size: 24px;
-                font-weight: 400;
-            }
-
-            p {
-                margin: 10px 0px 10px 0px;
-                font-family: "Roboto Slab", serif;
-                font-size: 20px;
-            }
-
-            #error_svg {
-                margin: 0;
-                width: 40%;
-            }
-
-            div {
-                width: 50%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-            }
-
-            #logo {
-                height: 30px;
-                width: auto;
-            }
-
-            .dark-btn {
-                margin: 10px 0px 10px 0px;
-                font-family: "Roboto Slab", serif;
-                font-size: 24px;
-                font-weight: 500;
-                padding: 5px 15px 5px 15px;
-                background-color: #03256c;
-                color: #FBFBFB;
-                border: 1px solid #FBFBFB;
-                border-radius: 5px;
-                cursor: pointer;
-                width: 50%;
-                text-align: center;
-                text-decoration: none;
-            }
-
-            .dark-btn:hover {
-                background-color: #FBFBFB;
-                color: #03256c;
-                border: 1px solid #03256c;
-            }
-
-        </style>
-        
+        <link href="{{ url_for('static',filename='css/error.css') }}" rel="stylesheet" type="text/css" />
     </head>
     <body>
-        <main>
-            <img src="{{ url_for('static',filename=fname) }}" alt="Error Image" id="error_svg"/>
-        <div>
-            <h1>Oops!</h1>
+        <h1>Uh oh!</h1>
+        <img src="{{ url_for('static',filename=fname) }}" alt="Error Image" id="error_svg" />
+        {% if e_type=="HTTPException" %}
             <h2>{{ e.code }}: {{ e.name }}</h2>
-            <p>{{ e.description }}</p>
-            <a class="dark-btn" href="{{ url_for('login') }}">Return to Home</a>
-        </div>
-    </main>
-    <footer style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <a href="https://www.curabit.in/"><img src="{{ url_for('static',filename='assets/logo_wo_taglin.svg') }}" alt="Curabit's Logo" id="logo"/></a>
-        <br>
-        <p style="font-size: 16px;">Need help? Shoot us an email at <a href='mailto:app-support@curabit.in' class='link-underline'>app-support@curabit.in</a></p>
-        <br>
-        <a href="https://www.storyset.com/" style="color: black; margin-top: 10px; font-family: 'Roboto Slab', serif; font-size: 14px;">Illustration by StorySet</a>
-    </footer>
+            <h3>{{ e.description }}</h3>
+        {% else %}
+            <h2>Error encountered!</h2>
+        {% endif %}
+        {% if notifyAdmin==True %}
+            <p>We have notified our tech team about this encounter as well. They are looking into what caused it.</p>
+        {% endif %}
+        <a class="dark-btn" href="{{ url_for('index') }}">Return to Home</a>
+        <p style="font-size: 12px;">For technical queries, email us at <a style="font-size: 12px;" href="mailto:console@curabit.in">console@curabit.in</a> | Illustrations by <a style="font-size: 12px;" href="https://www.storyset.com">StorySet</a></p>
     </body>
 </html>

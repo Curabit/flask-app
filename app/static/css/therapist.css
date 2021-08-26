@@ -1,0 +1,236 @@
+* { 
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.link-underline {
+    font-size: 600;
+}
+
+.link-underline:hover {
+    text-decoration: underline;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    color: #03256C;
+    background-color: #FBFBFB;
+    font-family: 'Roboto Slab', serif;
+}
+
+header {
+    background-color: #d9ed92;
+    padding: 7.5px 10px;
+}
+
+.divided-row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn {
+    padding: 5px 12.5px;
+    margin: 10px 2.5px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    text-decoration: none;
+}
+
+.blue-btn-dark {
+    border: 1px solid #03256C;
+    background-color: #03256C;
+    color: #FFFFFF;
+}
+
+.blue-btn-dark:hover {
+    background-color: #FFFFFF;
+    color: #03256C;
+}
+
+.blue-btn-light {
+    border: 1px solid #03256C;
+    background-color: #FFFFFF;
+    color: #03256C;
+}
+
+.blue-btn-light:hover {
+    background-color: #03256C;
+    color: #FFFFFF;
+}
+
+
+.red-btn-dark {
+    border: 1px solid #ee4266;
+    background-color: #ee4266;
+    color: #FFFFFF;
+}
+
+.red-btn-dark:hover {
+    background-color: #FFFFFF;
+    color: #ee4266;
+}
+
+.yellow-btn-dark {
+    border: 1px solid #fb5607;
+    background-color: #fb5607;
+    color: #FFFFFF;
+}
+
+.yellow-btn-dark:hover {
+    background-color: #FFFFFF;
+    color: #fb5607;
+}
+
+.green-btn-dark {
+    border: 1px solid #0ead69;
+    background-color: #0ead69;
+    color: #FFFFFF;
+}
+
+.green-btn-dark:hover {
+    background-color: #FFFFFF;
+    color: #0ead69;
+}
+
+.flashed-msg {
+    margin: 10px;
+    padding: 5px;
+    border: 1.5px solid rgba(3, 37, 108, 1);
+    background-color: #ffbe0b;
+    border-radius: 5px;
+    color: #03256C;
+}
+
+h1 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+}
+
+h2 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+h3 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#none-yet{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    padding: 10px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-window {
+    background-color: #FFFFFF;
+    padding: 10px;
+    width: 50%;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.field-container {
+    margin: 5px 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    align-self: stretch;
+}
+
+.field-container label {
+    font-family: 'Open Sans', 'Helvetica', sans-serif;
+    font-size: 14px;
+    margin: 2px 0px;
+}
+
+.field-container input[type="text"], input[type="email"], input[type="password"], textarea {
+    width: 100%;
+    padding: 2.5px;
+    font-family: 'Open Sans', 'Helvetica', sans-serif;
+    font-size: 14px;
+    margin: 2px 0px;
+}
+
+.error-container {
+    padding: 10px;
+    margin: 5px 0px;
+    width: 100%;
+    border-radius: 5px;
+    font-size: 12px;
+    font-family: 'Roboto Slab', serif;
+}
+
+.red-box {
+    border: 1px solid #CC0202;
+    color: #CC0202;
+}
+
+.card {
+    width: 100%;
+    border: 1px solid #03256C;
+    border-radius: 7.5px;
+    padding: 5px;
+    margin: 5px 0px;
+}

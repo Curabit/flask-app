@@ -1,0 +1,104 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-Style-Type" content="text/css">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+
+        <title>{{ current_user.name }}'s Dashboard | Console by Curabit</title>
+        <link rel="shortcut icon" type="image/ico" href="{{ url_for('static',filename='assets/favicon.png') }}" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
+
+        <link href="{{ url_for('static',filename='css/admin.css') }}" rel="stylesheet" type="text/css" />
+        <script src="{{ url_for('static',filename='js/collapsible.js') }}"></script>
+    </head>
+    <body>
+        <header class='divided-row'>
+            <div class="row-side-container">
+                <a href="{{ url_for('index') }}" class="link-no-underline">
+                    <h3 style="display: inline; font-size: 20px;">{{ current_user.name }}</h3>
+                    <span style="font-size: 20px; font-family: 'Open Sans', sans-serif; font-weight: 300; display: inline;"> | Admin's Console</span>
+                </a>
+            </div>
+            <div class="row-side-container">
+                <a class="btn red-btn-dark" href='{{ url_for("logout") }}'><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </header>
+        <main style="width: 100%;">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="flashed-msg">
+                            <p style="font-size: 14px;"><i class="fas fa-bell"></i> {{ message }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="section">
+                <h1>Registered Therapists</h1>
+                {% if not ths %}
+                <div id='none-yet'>
+                    <img src="{{ url_for('static',filename='assets/admin_svg/none-yet.svg') }}" id="none-svg" style="height: 350px;">
+                    <h2>No registered therapists found.</h2>
+                </div>
+                {% else %}
+                <div class="rows-container" style="width: 100%; margin:0px;">
+                    {% for th in ths %}
+                    <div class="row">
+                        <div class='divided-row'>
+                            <div class="row-side-container">
+                                <h3 style="display:inline; line-height: 16px;">{{ th.name }}</h3>
+                                {% if th.isVerified==True %}
+                                    <span style="line-height: 16px;" class="label-green">Verified</span>
+                                {% else %}
+                                    <span style="line-height: 16px;" class="label-red">Not Verified</span>
+                                {% endif %}
+                            </div>
+                            <div class="row-side-container">
+                                <button class='btn blue-btn-light collapse-btn' onclick="collapse(this)"><h3><i class="fas fa-chevron-down"></i></h3></button>
+                            </div>    
+                        </div>
+                        <div class="collapsible">
+                            <div class="detail">
+                                <label>Registered On</label>
+                                <p>{{ th.created_at|format_datetime }}</p>
+                            </div>
+                            <!-- <div class="detail">
+                                <label>Last Activity</label>
+                                <p>{{ th.lastLoggedIn }}</p>
+                            </div> -->
+                            <div class="detail">
+                                <label>Email ID</label>
+                                <p>{{ th.email }}</p>
+                            </div>
+                            <div class="detail">
+                                <label>Clinic Name</label>
+                                <p>{{ th.user_details['clinic_name'] }}</p>
+                            </div>
+                            <div class="detail">
+                                <label>Clinic's Address</label>
+                                <p>{{ th.user_details['clinic_add'] }}</p>
+                            </div>
+                            <div class="buttons-detail" style="margin: 10px -2.5px;">
+                                <a class='btn blue-btn-dark' href="{{ url_for('admin_reset_link', user_id=th._id, redirect_to='admin_db') }}">Send Password Reset Instructions</a>
+                                {% if th.isVerified==True %}
+                                    <a class='btn yellow-btn-dark' href="{{ url_for('admin_disapprove', user_id=th._id, redirect_to='admin_db') }}">Revoke Verification</a>
+                                {% else %}
+                                    <a class='btn green-btn-dark' href="{{ url_for('admin_approve', user_id=th._id, redirect_to='admin_db') }}">Approve Verification</a>
+                                {% endif %}
+                                <a class='btn red-btn-dark' href="{{ url_for('admin_delete', user_id=th._id, redirect_to='admin_db') }}">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </main>
+    </body>
+</html>

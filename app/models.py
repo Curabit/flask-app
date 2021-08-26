@@ -1,61 +1,34 @@
 import random
 import string
 from datetime import datetime
-from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from app import login
+from app import db, login, app
+from flask_login import UserMixin
+from time import time
+from app.mails import resetPass
+import jwt
 
-from app import db
-
-class Client(db.Document):
-    meta = {"collection": "clients"}
-    _id = db.StringField(primary_key=True)
-    th_id = db.StringField(required=True)
-    clnt_name = db.StringField(required=True)
-    gender = db.StringField()
-    age = db.StringField()
-    regDate = db.StringField()
-    lastUsed = db.StringField()
-
-    def register(self, th_id, clnt_name, gender, age, id=None):
-        if id is None:
-            self._id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)])
-        else:
-            self._id = id
-        self.th_id = th_id
-        self.clnt_name = clnt_name
-        self.gender =  gender if gender!="None" else ""
-        self.age = str(age)
-        self.regDate = datetime.utcnow().strftime("%d-%m-%Y %H:%M:%S")
-        self.lastUsed = ""
 
 class User(UserMixin, db.Document):
     meta = {'collection': 'users'}
-    _id = db.StringField(primary_key=True)
-    regDate = db.StringField(required=True)
-    th_name = db.StringField(required=True)
-    clinic_name = db.StringField()
-    clinic_add = db.StringField()
-    isVerified = db.BooleanField(required=True)
+    _id = db.StringField(primary_key=True, 
+    default=''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)]))
     email = db.StringField(required=True)
-    lastLoggedIn = db.StringField(required=True)
     psw_hash = db.StringField(required=True)
+    name = db.StringField(required=True)
+    user_type = db.StringField(required=True, default="therapist")
+    user_details = db.DynamicField()
+    isVerified = db.BooleanField(required=True, default=False)
+    lastActivity = db.DateTimeField()
+    created_at = db.DateTimeField(required=True, default=datetime.utcnow())
 
-    def register(self, th_name, clinic_name, clinic_add, email, id=None):
-        if id is None:
-            self._id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)])
-        else:
-            self._id = id
-        self.th_name = th_name
-        self.clinic_name = clinic_name
-        self.clinic_add = clinic_add
-        self.email = email
-        self.regDate = datetime.utcnow().strftime("%d-%m-%Y %H:%M:%S")
-        self.isVerified = False
-        self.lastLoggedIn = self.regDate[:]
-
+    def __init__(self, psw=None, *args, **values):
+        super().__init__(*args, **values)
+        if psw is not None:
+            self.set_hash(psw)
+    
     def log_in(self):
-        self.lastLoggedIn = datetime.utcnow().strftime("%d-%m-%Y %H:%M:%S")
+        self.lastLoggedIn = datetime.utcnow()
 
     def is_authenticated():
         return True
@@ -75,22 +48,62 @@ class User(UserMixin, db.Document):
     @staticmethod
     def check_hash(self, psw):
         return check_password_hash(self.psw_hash, psw)
+    
+    def get_reset_password_token(self, expires_in=600):
+        x = jwt.encode(
+            {'reset_password': self._id, 'exp': time() + expires_in},
+            app.config['SECRET_KEY'], algorithm='HS256')
+        print(x)
+        return x
 
-class Usage(db.Document):
-    meta = {"collection": "usage"}
+    def send_reset_email(self):
+        resetPass(email=self.email, th_name=self.name, token=self.get_reset_password_token())
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            resp = jwt.decode(token, app.config['SECRET_KEY'],
+                            algorithms=['HS256'])
+            _id = resp['reset_password']
+        except Exception as e:
+            return
+        return User.objects(_id=_id).first()
+
+class Client(db.Document):
+    meta = {"collection": "clients"}
     _id = db.StringField(primary_key=True)
     th_id = db.StringField(required=True)
-    clnt_id = db.StringField(required=True)
-    clnt_name = db.StringField(required=True)
-    scenario_id = db.StringField(required=True)
-    timestamp = db.StringField(required=True)
+    name = db.StringField(required=True)
+    age = db.IntField(required=True)
+    sex = db.StringField(required=True)
+    lastSession = db.DateField()
 
     def __init__(self, *args, **values):
         super().__init__(*args, **values)
-        self.timestamp = datetime.utcnow().strftime("%d-%m-%Y %H:%M:%S")
+        self._id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)])
 
-class testJSON(db.DynamicDocument):
-    pass
+class Scene(db.Document):
+    meta = {"collection": "scenes"}
+    _id = db.StringField(primary_key=True)
+    name = db.StringField(required=True)
+    flow = db.DynamicField(required=True)
+
+    def __init__(self, *args, **values):
+        super().__init__(*args, **values)
+        self._id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)])
+
+class Session(db.Document):
+    meta = {"collections": "sessions"}
+    _id = db.StringField(primary_key=True)
+    th_id = db.StringField(required=True)
+    cl_id = db.StringField(required=True)
+    sc_id = db.StringField(required=True)
+    beganAt = db.DateTimeField(required=True, default=datetime.utcnow())
+    endAt = db.DateTimeField(required=True)
+
+    def __init__(self, *args, **values):
+        super().__init__(*args, **values)
+        self._id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)])
 
 @login.user_loader
 def load_user(_id):

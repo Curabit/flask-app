@@ -5,7 +5,7 @@
         <meta http-equiv="Content-Style-Type" content="text/css">
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
 
-        <title>Log In | Console by Curabit</title>
+        <title>Reset Password | Console by Curabit</title>
         <link rel="shortcut icon" type="image/ico" href="{{ url_for('static',filename='assets/favicon.png') }}" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,13 +18,13 @@
     </head>
     <body>
         <div class="side-container" id="main-left-container">
-            <img src="{{ url_for('static',filename='assets/auth_actions_svg/login.svg') }}" class="action" alt="Log In">
+            <img src="{{ url_for('static',filename='assets/auth_actions_svg/reset-psw.svg') }}" class="action" alt="Registration">
             <div class="intro-container">
                 <h2>Console by</h2>
                 <a href="https://www.curabit.in/"><img src="{{ url_for('static',filename='assets/logo_wo_taglin.svg') }}" alt="Curabit's Logo" id="logo_washed"/></a>
             </div>
-            <h1>Log In</h1>
-            <p style="margin: 15px 0px;">Not registered yet? <a href="{{ url_for('register') }}">Register now!</a></p>
+            <h1>Reset Password</h1>
+            <p style="margin: 15px 0px;">Don't need to reset your password? <a href="{{ url_for('login') }}">Just log in here.</a></p>
         </div>
         <div class="side-container" id="main-right-container">
             <form method="POST">
@@ -34,38 +34,36 @@
                     {% if messages %}
                         {% for message in messages %}
                         <div class="error-container purple-box">
-                            <p style="margin: 0px;"><i class="fas fa-exclamation-circle"></i> {{ message }}</p>
+                            <p><i class="fas fa-exclamation-circle"></i> {{ message }}</p>
                         </div>
                         {% endfor %}
                 {% endif %}
                 {% endwith %}
-                
-                <div class='field-container'>
-                    <label for='email'><i class="fas fa-at"></i> Email ID</label>
-                    {{ form.email(size=70) }}
-                    {% for error in form.email.errors %}
-                        <div class="error-container red-box">
-                            <i class="fas fa-exclamation-circle"></i> {{ error }}
-                        </div>
-                    {% endfor %}
-                </div>
 
                 <div class='field-container'>
-                    <label for="psw"><i class="fas fa-key"></i> Password</label>
+                    <label for="psw"><i class="fas fa-key"></i> Create Password</label>
                     <div id="psw-container" style="width: 100%;">
-                        {{ form.psw() }}
+                        {{ form.new_psw() }}
                         <i class="far fa-eye togglePassword" style="margin-left: -30px; cursor: pointer;"></i>
                     </div>
-                    {% for error in form.psw.errors %}
+                    {% for error in form.new_psw.errors %}
                         <div class="error-container red-box">
-                            <i class="fas fa-exclamation-circle"></i> {{ error }}
+                            <p><i class="fas fa-exclamation-circle"></i> {{ error }}</p>
                         </div>
                     {% endfor %}
                 </div>
 
-                <div class='field-container' id="two-fields">
-                    <span>{{ form.remember_me() }} {{ form.remember_me.label }}</span>
-                    <a href="{{ url_for('forgotPassword') }}"><label style="cursor: pointer;">Forgot Password?</label></a>
+                <div class='field-container'>
+                    <label for="psw2"><i class="fas fa-key"></i> Confirm Password</label>
+                    <div id="psw-container" style="width: 100%;">
+                        {{ form.new_psw2() }}
+                        <i class="far fa-eye togglePassword" style="margin-left: -30px; cursor: pointer;"></i>
+                    </div>
+                    {% for error in form.new_psw2.errors %}
+                        <div class="error-container red-box">
+                            <p><i class="fas fa-exclamation-circle"></i> {{ error }}</p>
+                        </div>
+                    {% endfor %}
                 </div>
 
                 {{ form.submit() }}
