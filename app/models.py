@@ -53,7 +53,6 @@ class User(UserMixin, db.Document):
         x = jwt.encode(
             {'reset_password': self._id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256')
-        print(x)
         return x
 
     def send_reset_email(self):
