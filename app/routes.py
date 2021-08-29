@@ -3,9 +3,11 @@ from app import app
 from flask import url_for, redirect, render_template, flash, request, jsonify
 from werkzeug.urls import url_parse
 from app.forms import formForgotPassword, formLogin, formRegisterTherapist, formResetPassword
-from app.models import User, Client, testJSON
+from app.models import User, Client, testJSON, apiObj
 from flask_login import current_user, login_user, logout_user, login_required
 import datetime as dt
+from threading import Thread
+from time import sleep
 from datetime import datetime
 
 @app.route('/', methods=['GET', 'POST'])
@@ -123,7 +125,7 @@ def admin_db():
     th_list = User.objects(user_type='therapist')
     return render_template('admin_db.html', ths=th_list)
 
-@app.route('/admin_reset_link', methods=['GET'])
+@app.route('/admin/reset_link', methods=['GET'])
 @login_required
 def admin_reset_link():
     if current_user.user_type!='admin':
@@ -136,7 +138,7 @@ def admin_reset_link():
         flash('Password Reset Instructions have been mailed.')
     return redirect(url_for(request.args.get('redirect_to')))
 
-@app.route('/admin_approve', methods=['GET'])
+@app.route('/admin/approve', methods=['GET'])
 @login_required
 def admin_approve():
     if current_user.user_type!='admin':
@@ -149,7 +151,7 @@ def admin_approve():
         flash(user.name+" has been approved.")
     return redirect(url_for(request.args.get('redirect_to')))
 
-@app.route('/admin_disapprove', methods=['GET'])
+@app.route('/admin/disapprove', methods=['GET'])
 @login_required
 def admin_disapprove():
     if current_user.user_type!='admin':
@@ -163,7 +165,7 @@ def admin_disapprove():
         flash(user.name+"'s approval has been revoked.")
     return redirect(url_for(request.args.get('redirect_to')))
 
-@app.route('/admin_delete', methods=['GET'])
+@app.route('/admin/delete', methods=['GET'])
 @login_required
 def admin_delete():
     if current_user.user_type!='admin':
@@ -177,13 +179,13 @@ def admin_delete():
     return redirect(url_for(request.args.get('redirect_to')))
 
 
-@app.route('/dashboard', methods=['GET', 'POST'])
+@app.route('/therapist', methods=['GET', 'POST'])
 @login_required
 def therapist_db():
     cls = Client.objects(th_id=current_user._id)
     return render_template('therapist_db.html', cls=cls)
 
-@app.route('/th_add_client', methods=['POST'])
+@app.route('/therapist/add_client', methods=['POST'])
 @login_required
 def add_client():
     if current_user.user_type!='therapist':
@@ -208,6 +210,39 @@ def serve_json():
     else:
         test_obj = testJSON.objects().first()
         return jsonify(test_obj), 200
+
+def delete_temp_apiObj(token):
+    sleep(600)
+    token.delete()
+
+@app.route('/api/add_code', methods=['POST'])
+def add_code():
+    req = request.get_json(force=True)
+    token = apiObj(
+        req='set_pairing_code',
+        code=req['code']
+    ).save()
+    Thread(target=delete_temp_apiObj, args=(token)).start()
+    
+@app.route('/therapist/pair_headset', methods=['POST'])
+@login_required
+def pair_headset():
+    code = request.form.get('code')
+    token = apiObj.__objects(
+        req='set_pairing_code',
+        code=code
+        ).first()
+    if token is not None:
+        apiObj(
+            req='ack_pairing_code',
+            code=code,
+            _id=current_user._id
+        ).save()
+        token.delete()
+        flash('Paired headset successfully.')
+    else:
+        flash('Pairing code expired or invalid.')
+    return redirect(request.referrer)
 
 @app.before_request
 def before_request():

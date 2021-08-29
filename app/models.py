@@ -68,44 +68,44 @@ class User(UserMixin, db.Document):
             return
         return User.objects(_id=_id).first()
 
+
 class Client(db.Document):
     meta = {"collection": "clients"}
-    _id = db.StringField(primary_key=True)
+    _id = db.StringField(primary_key=True, 
+    default=''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)]))
     th_id = db.StringField(required=True)
     name = db.StringField(required=True)
     age = db.IntField(required=True)
     sex = db.StringField(required=True)
     lastSession = db.DateField()
 
-    def __init__(self, *args, **values):
-        super().__init__(*args, **values)
-        self._id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)])
-
 class Scene(db.Document):
     meta = {"collection": "scenes"}
-    _id = db.StringField(primary_key=True)
+    _id = db.StringField(primary_key=True, 
+    default=''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)]))
     name = db.StringField(required=True)
     flow = db.DynamicField(required=True)
 
-    def __init__(self, *args, **values):
-        super().__init__(*args, **values)
-        self._id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)])
-
 class Session(db.Document):
     meta = {"collections": "sessions"}
-    _id = db.StringField(primary_key=True)
+    _id = db.StringField(primary_key=True, 
+    default=''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)]))
     th_id = db.StringField(required=True)
     cl_id = db.StringField(required=True)
     sc_id = db.StringField(required=True)
     beganAt = db.DateTimeField(required=True, default=datetime.utcnow())
     endAt = db.DateTimeField(required=True)
 
-    def __init__(self, *args, **values):
-        super().__init__(*args, **values)
-        self._id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)])
-
 class testJSON(db.DynamicDocument):
     pass
+
+class apiObj(db.DynamicDocument):
+    meta = {"collection": "objectStorage"}
+
+    # {'req':'start_pair', 'code': $code}
+    # {'req':'ack_pair', 'code': $code, '_id':$_id}
+
+
 
 @login.user_loader
 def load_user(_id):
