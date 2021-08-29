@@ -40,6 +40,6 @@ def handle_exception(e):
         loggedInAs=loggedInAs, 
         ip=request.remote_addr, 
         ua=request.user_agent.string)
-        
+
         return render_template("error.html", e=e, fname=fname, e_type=e_type, notifyAdmin=notifyAdmin), 500
     

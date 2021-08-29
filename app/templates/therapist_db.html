@@ -25,7 +25,7 @@
                 </a>
             </div>
             <div class='row-side-container'>
-                <a class='btn blue-btn-dark' href="#TODO"><i class='fas fa-cog'></i> Settings</a>
+                <button onclick='modal_load("addHeadset")' class='btn blue-btn-dark' style='margin: 0px 5px;'><i class='fas fa-vr-cardboard'></i> Headset</button>
                 <a class='btn red-btn-dark' href='{{ url_for("logout") }}'><i class='fas fa-sign-out-alt'></i> Logout</a>
             </div>
         </header>
@@ -67,6 +67,26 @@
                 {% endif %}
             </div>
         </main>
+        <div class='modal' id='addHeadset'>
+            <div class='modal-window'>
+                <div class='divided-row'>
+                    <div class='row-side-container'>
+                        <h2>Headset Configuraion</h2>
+                    </div>
+                    <div class='row-side-container'>
+                        <button class='btn blue-btn-light close-btn' style='margin: 0px;'><i class='fas fa-times'></i></button>
+                    </div>
+                </div>
+                <form action='{{ url_for("pair_headset") }}' method='POST'>
+                    <div class='field-container'>
+                        <label for='code'>Headset Code</label>
+                        <input type='text' id='code' name='code' required autofocus autocomplete="off" value='{{ current_user.hcode }}'>
+                    </div>
+
+                    <button type='submit' class='btn blue-btn-dark' style='font-size: 14px;'>Link Headset</button>
+                </form>
+            </div>
+        </div>
         <div class='modal' id='addClient'>
             <div class='modal-window'>
                 <div class='divided-row'>

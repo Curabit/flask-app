@@ -21,6 +21,7 @@ class User(UserMixin, db.Document):
     isVerified = db.BooleanField(required=True, default=False)
     lastActivity = db.DateTimeField()
     created_at = db.DateTimeField(required=True, default=datetime.utcnow())
+    hcode = db.StringField(default="Not Set")
 
     def __init__(self, psw=None, *args, **values):
         super().__init__(*args, **values)

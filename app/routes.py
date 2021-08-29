@@ -1,6 +1,6 @@
 from app.mails import ackSignUp, approvedSignUp, notifySignUp
 from app import app
-from flask import url_for, redirect, render_template, flash, request, jsonify
+from flask import json, url_for, redirect, render_template, flash, request, jsonify
 from werkzeug.urls import url_parse
 from app.forms import formForgotPassword, formLogin, formRegisterTherapist, formResetPassword
 from app.models import User, Client, testJSON, apiObj
@@ -211,33 +211,57 @@ def serve_json():
         test_obj = testJSON.objects().first()
         return jsonify(test_obj), 200
 
-def delete_temp_apiObj(token):
+def delete_temp_apiObj(code):
     sleep(600)
-    token.delete()
-
-@app.route('/api/add_code', methods=['POST'])
-def add_code():
-    req = request.get_json(force=True)
-    token = apiObj(
+    token = apiObj.objects(
         req='set_pairing_code',
-        code=req['code']
-    ).save()
-    Thread(target=delete_temp_apiObj, args=(token)).start()
+        code=code
+        ).first()
+    if token is not None:
+        token.delete()
+
+@app.route('/api/endpoint', methods=['POST'])
+def handle_api_req():
+    req = request.get_json(force=True)
+    req_type = req['req']
+    if req_type=="set_pairing_code":
+        return add_code(req['code'])
+    elif req_type=='get_id':
+        return get_id(req['code'])
+    else:
+        return jsonify({"resp": "Operation not found."}), 400
+    
+
+def add_code(code):
+    user = User.objects(hcode=code).first()
+    if user is None:
+        token = apiObj(
+            req='set_pairing_code',
+            code=code
+        ).save()
+        Thread(target=delete_temp_apiObj, args=(token,)).start()
+        return jsonify({"resp": "OK"}), 201
+    else:
+        return jsonify({"resp": "Code already exists"}), 400
+
+def get_id(code):
+    user = User.objects(hcode=code).first()
+    if user is not None:
+        return jsonify({"resp": user._id}), 200
+    else:
+        return jsonify({'resp': 'Code not paired yet.'}), 400
+        
     
 @app.route('/therapist/pair_headset', methods=['POST'])
 @login_required
 def pair_headset():
     code = request.form.get('code')
-    token = apiObj.__objects(
+    token = apiObj.objects(
         req='set_pairing_code',
         code=code
         ).first()
     if token is not None:
-        apiObj(
-            req='ack_pairing_code',
-            code=code,
-            _id=current_user._id
-        ).save()
+        current_user.update(hcode=code)
         token.delete()
         flash('Paired headset successfully.')
     else:
