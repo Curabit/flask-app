@@ -3,10 +3,17 @@ from flask import render_template, request
 from app import app, mails
 import traceback
 from werkzeug.exceptions import HTTPException
+from flask_login import current_user
 
 @app.errorhandler(Exception)
 def handle_exception(e):
     notifyAdmin = True
+
+    if notifyAdmin is True:    
+        if current_user.is_authenticated:
+            loggedInAs = current_user.email
+        else:
+            loggedInAs = 'Not Logged In'
 
     if isinstance(e, HTTPException):
         e_type = "HTTPException"
@@ -16,13 +23,10 @@ def handle_exception(e):
             fname = "assets/errors_svg/gen.svg"
         if e.code != 500:
             notifyAdmin = False
-        if notifyAdmin is True:
-            
-            #TODO: Check if user is authenticated. If yes, send email ID of current user. If no, send notLoggedIn.
             
             mails.notifyError(e=str(e.code), 
             tr=traceback.format_exc(), 
-            loggedInAs="dummy", 
+            loggedInAs=loggedInAs, 
             ip=request.remote_addr, 
             ua=request.user_agent.string)
 
@@ -30,13 +34,12 @@ def handle_exception(e):
     else:
         e_type = "Exception"
         fname = "assets/errors_svg/gen.svg"
-        
-        #TODO: Check if user is authenticated. If yes, send email ID of current user. If no, send notLoggedIn.
-        mails.notifyError(e="Not HTTP Exception", 
+
+        mails.notifyError(e=str(e.code), 
         tr=traceback.format_exc(), 
-        loggedInAs="dummy", 
+        loggedInAs=loggedInAs, 
         ip=request.remote_addr, 
         ua=request.user_agent.string)
-
+        
         return render_template("error.html", e=e, fname=fname, e_type=e_type, notifyAdmin=notifyAdmin), 500
     
