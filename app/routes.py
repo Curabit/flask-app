@@ -214,16 +214,22 @@ def serve_json():
 
 @app.route('/api/endpoint', methods=['POST'])
 def handle_api_req():
-    req = request.get_json(force=True)
-    req_type = req['req']
-    if req_type=="set_pairing_code":
-        return add_code(req['code'])
-    elif req_type=='get_id':
-        return get_id(req['code'])
-    elif req_type=='get_user_session':
-        return get_user_status(req['id'])
-    else:
-        return jsonify({"resp": "Operation not found."}), 400
+    try:
+        req = request.get_json(force=True)
+        req_type = req['req']
+        if req_type=="set_pairing_code":
+            return add_code(req['code'])
+        elif req_type=='get_id':
+            return get_id(req['code'])
+        elif req_type=='get_user_session':
+            return get_user_status(req['id'])
+        else:
+            return jsonify({"resp": "Operation not found."}), 400
+    except Exception as e:
+        return jsonify({
+            "resp": "Error",
+            "msg": str(e)
+        }), 400
     
 
 
