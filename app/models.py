@@ -22,6 +22,9 @@ class User(UserMixin, db.Document):
     lastActivity = db.DateTimeField()
     created_at = db.DateTimeField(required=True, default=datetime.utcnow())
     hcode = db.StringField(default="Not Set")
+    session = db.DynamicField(default={
+        'status': 'on-standby'
+    })
 
     def __init__(self, psw=None, *args, **values):
         super().__init__(*args, **values)
