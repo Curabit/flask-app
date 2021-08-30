@@ -14,7 +14,8 @@ def delete_temp_apiObj(code):
 
 def add_code(code):
     user = User.objects(hcode=code).first()
-    if user is None:
+    token = apiObj(code=code).first()
+    if user is None and token is None:
         token = apiObj(
             req='set_pairing_code',
             code=code
