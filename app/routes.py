@@ -199,7 +199,7 @@ def add_client():
     flash('Client added successfully.')
     return redirect(url_for('therapist_db'))
 
-@app.route("/api/json", methods=["POST","GET"])
+@app.route("/api/json", methods=["PUT"])
 def serve_json():
     if request.method=="POST":
         test_obj = testJSON.objects().first()
@@ -212,7 +212,7 @@ def serve_json():
         test_obj = testJSON.objects().first()
         return jsonify(test_obj), 200
 
-@app.route('/api/endpoint', methods=['POST'])
+@app.route('/api/endpoint', methods=['PUT'])
 def handle_api_req():
     try:
         req = request.get_json(force=True)
