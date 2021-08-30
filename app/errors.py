@@ -35,7 +35,7 @@ def handle_exception(e):
         e_type = "Exception"
         fname = "assets/errors_svg/gen.svg"
 
-        mails.notifyError(e=str(e.code), 
+        mails.notifyError(e=str(500), 
         tr=traceback.format_exc(), 
         loggedInAs=loggedInAs, 
         ip=request.remote_addr, 
