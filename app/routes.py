@@ -4,6 +4,7 @@ from flask import json, url_for, redirect, render_template, flash, request, json
 from werkzeug.urls import url_parse
 from app.forms import formForgotPassword, formLogin, formRegisterTherapist, formResetPassword
 from app.models import User, Client, testJSON, apiObj
+from app.api import add_code, get_id, get_user_status
 from flask_login import current_user, login_user, logout_user, login_required
 import datetime as dt
 from threading import Thread
@@ -211,15 +212,6 @@ def serve_json():
         test_obj = testJSON.objects().first()
         return jsonify(test_obj), 200
 
-def delete_temp_apiObj(code):
-    sleep(600)
-    token = apiObj.objects(
-        req='set_pairing_code',
-        code=code
-        ).first()
-    if token is not None:
-        token.delete()
-
 @app.route('/api/endpoint', methods=['POST'])
 def handle_api_req():
     req = request.get_json(force=True)
@@ -228,28 +220,13 @@ def handle_api_req():
         return add_code(req['code'])
     elif req_type=='get_id':
         return get_id(req['code'])
+    elif req_type=='get_user_session':
+        return get_user_status(req['id'])
     else:
         return jsonify({"resp": "Operation not found."}), 400
     
 
-def add_code(code):
-    user = User.objects(hcode=code).first()
-    if user is None:
-        token = apiObj(
-            req='set_pairing_code',
-            code=code
-        ).save()
-        Thread(target=delete_temp_apiObj, args=(token,)).start()
-        return jsonify({"resp": "OK"}), 201
-    else:
-        return jsonify({"resp": "Code already exists"}), 400
 
-def get_id(code):
-    user = User.objects(hcode=code).first()
-    if user is not None:
-        return jsonify({"resp": user._id}), 200
-    else:
-        return jsonify({'resp': 'Code not paired yet.'}), 400
         
     
 @app.route('/therapist/pair_headset', methods=['POST'])

@@ -11,5 +11,5 @@ sg = SendGridAPIClient(app.config['SENDGRID_API_KEY'])
 login = LoginManager(app)
 login.login_view = 'login'
 
-# from app import routes, models, mails, forms
-from app import routes, models, mails, errors, forms
+from app import routes, models, mails, forms, api
+# from app import routes, models, mails, errors, forms, api
