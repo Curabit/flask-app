@@ -1,3 +1,4 @@
+from datetime import datetime
 from sendgrid.helpers.mail import Mail, From
 from app import sg
 from flask import url_for, request
@@ -46,6 +47,9 @@ def notifyError(e, tr, loggedInAs, ip, ua):
             'e': e,
             'tr': tr,
             'from_url': request.url,
+            'req_date': request.date,
+            'utc_date': datetime.utcnow(),
+            'headers': str(request.headers),
             'loggedInAs': loggedInAs,
             'ip_add': ip,
             'user_agent': ua
