@@ -1,6 +1,6 @@
 from sendgrid.helpers.mail import Mail, From
 from app import sg
-from flask import url_for
+from flask import url_for, request
 
 def resetPass(email, th_name, token):
     message = Mail(to_emails=email)
@@ -45,6 +45,7 @@ def notifyError(e, tr, loggedInAs, ip, ua):
         message.dynamic_template_data = {
             'e': e,
             'tr': tr,
+            'from_url': request.url,
             'loggedInAs': loggedInAs,
             'ip_add': ip,
             'user_agent': ua

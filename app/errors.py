@@ -4,9 +4,11 @@ from app import app, mails
 import traceback
 from werkzeug.exceptions import HTTPException
 from flask_login import current_user
+from flask import request
 
 @app.errorhandler(Exception)
 def handle_exception(e):
+
     notifyAdmin = True
 
     if notifyAdmin is True:    
