@@ -1,15 +1,21 @@
 from app.mails import ackSignUp, approvedSignUp, notifySignUp
 from app import app
-from flask import json, url_for, redirect, render_template, flash, request, jsonify
+from flask import url_for, redirect, render_template, flash, request, jsonify
 from werkzeug.urls import url_parse
 from app.forms import formForgotPassword, formLogin, formRegisterTherapist, formResetPassword
 from app.models import User, Client, testJSON, apiObj
 from app.api import add_code, get_id, get_user_status
 from flask_login import current_user, login_user, logout_user, login_required
 import datetime as dt
-from threading import Thread
-from time import sleep
 from datetime import datetime
+
+@app.route('/robots.txt', methods=['GET'])
+def robots():
+    return """
+    User-Agent: *
+    Allow: /login
+    Disallow: /
+    """
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -230,9 +236,6 @@ def handle_api_req():
             "resp": "Error",
             "msg": str(e)
         }), 400
-    
-
-
         
     
 @app.route('/therapist/pair_headset', methods=['POST'])

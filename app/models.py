@@ -18,10 +18,10 @@ class User(UserMixin, db.Document):
     name = db.StringField(required=True)
     user_type = db.StringField(required=True, default="therapist")
     user_details = db.DynamicField()
-    isVerified = db.BooleanField(required=True, default=False)
+    isVerified = db.BooleanField(default=False)
     lastActivity = db.DateTimeField()
     created_at = db.DateTimeField(required=True, default=datetime.utcnow())
-    hcode = db.StringField(default="Not Set")
+    hcode = db.StringField(default="Not set")
     session = db.DynamicField(default={
         'status': 'on-standby'
     })
@@ -108,8 +108,6 @@ class apiObj(db.DynamicDocument):
 
     # {'req':'start_pair', 'code': $code}
     # {'req':'ack_pair', 'code': $code, '_id':$_id}
-
-
 
 @login.user_loader
 def load_user(_id):
