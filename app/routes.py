@@ -9,6 +9,14 @@ from flask_login import current_user, login_user, logout_user, login_required
 import datetime as dt
 from datetime import datetime
 
+@app.route('/robots.txt', methods=['GET'])
+def robots():
+    return """
+    User-Agent: *
+    Allow: /login
+    Disallow: /
+    """
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if current_user.is_authenticated:
@@ -228,9 +236,6 @@ def handle_api_req():
             "resp": "Error",
             "msg": str(e)
         }), 400
-    
-
-
         
     
 @app.route('/therapist/pair_headset', methods=['POST'])
