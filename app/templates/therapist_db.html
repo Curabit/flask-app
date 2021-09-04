@@ -57,7 +57,7 @@
                             <span style='font-size: 12px;'>{{ cl.age }} | {{ cl.sex }}</span>    
                         </div>
                         <div class='row-side-container'>
-                            <button onclick='modal_load("startSession")' class='btn blue-btn-dark' style="margin: 5px 0px;">Start Session</button>
+                            <button onclick='selectClient("{{ cl._id }}")' class='btn blue-btn-dark' style="margin: 5px 0px;">Start Session</button>
                             <a class='btn red-btn-dark' href="#TODO">Delete Client</a>
                         </div>
                     </div>
@@ -132,18 +132,9 @@
                     </div>
                 </div>
                 <div class='scenes-container'>
-                    <a class='btn blue-btn-light' href="#TODO">Scene 1</a>
-                    <a class='btn blue-btn-light' href="#TODO">Scene 2</a>
-                    <a class='btn blue-btn-light' href="#TODO">Scene 3</a>
-                    <a class='btn blue-btn-light' href="#TODO">Scene 1</a>
-                    <a class='btn blue-btn-light' href="#TODO">Scene 2</a>
-                    <a class='btn blue-btn-light' href="#TODO">Scene 3</a>
-                    <a class='btn blue-btn-light' href="#TODO">Scene 1</a>
-                    <a class='btn blue-btn-light' href="#TODO">Scene 2</a>
-                    <a class='btn blue-btn-light' href="#TODO">Scene 3</a>
-                    <a class='btn blue-btn-light' href="#TODO">Scene 1</a>
-                    <a class='btn blue-btn-light' href="#TODO">Scene 2</a>
-                    <a class='btn blue-btn-light' href="#TODO">Scene 3</a>
+                    {% for sc in scs %}
+                    <button onclick='startSession("{{ url_for("start_session") }}","{{ sc.id }}")' class='btn blue-btn-light' style="margin: 5px 0px;">{{ sc.name }}</button>
+                    {% endfor %}
                 </div>
             </div>
         </div>

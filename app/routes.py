@@ -3,7 +3,7 @@ from app import app
 from flask import url_for, redirect, render_template, flash, request, jsonify
 from werkzeug.urls import url_parse
 from app.forms import formForgotPassword, formLogin, formRegisterTherapist, formResetPassword
-from app.models import User, Client, testJSON, apiObj, Scene
+from app.models import Session, User, Client, testJSON, apiObj, Scene
 from app.api import add_code, get_id, get_user_status
 from flask_login import current_user, login_user, logout_user, login_required
 import datetime as dt
@@ -216,7 +216,8 @@ def scene_delete():
 @login_required
 def therapist_db():
     cls = Client.objects(th_id=current_user._id)
-    return render_template('therapist_db.html', cls=cls)
+    scs = Scene.objects()
+    return render_template('therapist_db.html', cls=cls, scs=scs)
 
 @app.route('/therapist/add_client', methods=['POST'])
 @login_required
@@ -230,6 +231,37 @@ def add_client():
     client.save()
     flash('Client added successfully.')
     return redirect(url_for('therapist_db'))
+
+@app.route('/therapist/startSession', methods=['GET'])
+@login_required
+def start_session():
+    sesh = Session(
+        th_id = current_user._id,
+        cl_id = request.args.get('cl_id'),
+        sc_id = request.args.get('sc_id')
+    )
+    sesh.save()
+    current_user.update(
+        session = {
+            'status': sesh._id
+        }
+    )
+    #TODO: Session has been created here. Now, what?
+    return "Running Session: "+str(sesh._id)
+
+@app.route('/therapist/stopSession', methods=['GET'])
+@login_required
+def stop_session():
+    sesh = Session.objects(current_user.session['status']).first()
+    sesh.update(
+        endAt = datetime.utcnow()
+    )
+    current_user.update(
+        session = {
+            'status': 'on-standby'
+        }
+    )
+
 
 @app.route("/api/json", methods=["GET", "POST"])
 def serve_json():

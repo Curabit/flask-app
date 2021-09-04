@@ -98,7 +98,7 @@ class Session(db.Document):
     cl_id = db.StringField(required=True)
     sc_id = db.StringField(required=True)
     beganAt = db.DateTimeField(required=True, default=datetime.utcnow())
-    endAt = db.DateTimeField(required=True)
+    endAt = db.DateTimeField()
 
 class testJSON(db.DynamicDocument):
     pass
