@@ -15,6 +15,7 @@
 
         <link href="{{ url_for('static',filename='css/admin.css') }}" rel="stylesheet" type="text/css" />
         <script src="{{ url_for('static',filename='js/collapsible.js') }}"></script>
+        <script src='{{ url_for("static",filename="js/modal_controls.js") }}'></script>
     </head>
     <body>
         <header class='divided-row'>
@@ -43,7 +44,7 @@
                 <h1>Registered Therapists</h1>
                 {% if not ths %}
                 <div id='none-yet'>
-                    <img src="{{ url_for('static',filename='assets/admin_svg/none-yet.svg') }}" id="none-svg" style="height: 350px;">
+                    <img src="{{ url_for('static',filename='assets/admin_svg/none-yet.svg') }}" id="none-svg" style="height: 250px;">
                     <h2>No registered therapists found.</h2>
                 </div>
                 {% else %}
@@ -98,6 +99,69 @@
                     {% endfor %}
                 </div>
                 {% endif %}
+            </div>
+            <div class="section">
+                <h1>Available Scenes</h1>
+                {% if not scs %}
+                <div id='none-yet'>
+                    <img src="{{ url_for('static',filename='assets/admin_svg/none-yet.svg') }}" id="none-svg" style="height: 250px;">
+                    <h2>No scenes added</h2>
+                    <button onclick='modal_load("addScene")' class='btn blue-btn-light' style="margin: 5px 0px;">Add a scene</button>
+                </div>
+                {% else %}
+                <div class="rows-container" style="width: 100%; margin:0px;">
+                    {% for sc in scs %}
+                    <div class="row">
+                        <div class='divided-row'>
+                            <div class="row-side-container">
+                                <h3 style="display:inline; line-height: 16px;">{{ sc.name }}</h3>
+                            </div>
+                            <div class="row-side-container">
+                                <button class='btn blue-btn-light collapse-btn' onclick="collapse(this)"><h3><i class="fas fa-chevron-down"></i></h3></button>
+                            </div>    
+                        </div>
+                        <div class="collapsible">
+                            <div class="detail">
+                                <label>JSON Details</label>
+                                <p>{{ str(sc.flow) }}</p>
+                            </div>
+                                <a class='btn red-btn-dark' href="{{ url_for('admin_delete', sc_id=sc._id, redirect_to='admin_db') }}">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class='modal' id='addScene'>
+                <div class='modal-window'>
+                    <div class='divided-row'>
+                        <div class='row-side-container'>
+                            <h2>Add New Client</h2>
+                        </div>
+                        <div class='row-side-container'>
+                            <button class='btn blue-btn-light close-btn' style='margin: 0px;'><i class='fas fa-times'></i></button>
+                        </div>
+                    </div>
+                    <form action='{{ url_for("add_scene", redirect_to="admin_db") }}' method='POST'>
+                        
+                        <div class='field-container'>
+                            <label for='name'>Scene Name</label>
+                            <input type='text' id='name' name='name' required autofocus autocomplete="off">
+                        </div>
+<!-- 
+                        <div class='field-container'>
+                            <label for='sc_img'>Thumbnail Image</label>
+                            <input type='text' id='sc_img' name='sc_img' required autocomplete="off">
+                        </div> -->
+
+                        <div class='field-container'>
+                            <label for='txt_json'>JSON Structure</label>
+                            <textarea id='txt_json' name='txt_json' placeholder="Enter JSON Structure"></textarea>
+                        </div>
+    
+                        <button type='submit' class='btn blue-btn-dark' style='font-size: 14px;'>Add Scene</button>
+                    </form>
+                </div>
             </div>
         </main>
     </body>
