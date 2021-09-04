@@ -20,7 +20,7 @@
         <img src="{{ url_for('static',filename=fname) }}" alt="Error Image" id="error_svg" />
         {% if e_type=="HTTPException" %}
             <h2>{{ e.code }}: {{ e.name }}</h2>
-            <h3>{{ e.description }}</h3>
+            <h3 style="width: 70%;">{{ e.description }}</h3>
         {% else %}
             <h2>Error encountered!</h2>
         {% endif %}

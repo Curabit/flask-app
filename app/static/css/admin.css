@@ -197,7 +197,6 @@ h3 {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.2s ease-out;
-    padding-bottom: 5px;
 }
 
 .collapse-btn {

@@ -8,6 +8,7 @@ from app.api import add_code, get_id, get_user_status
 from flask_login import current_user, login_user, logout_user, login_required
 import datetime as dt
 import json
+from werkzeug.exceptions import InternalServerError
 from datetime import datetime
 
 @app.route('/robots.txt', methods=['GET'])
@@ -190,21 +191,17 @@ def admin_delete():
 @app.route('/admin/add_scene', methods=['POST'])
 @login_required
 def add_scene():
-    try:
-        if current_user.user_type!='admin':
-            return redirect(url_for('index'))
-        sc = Scene(
-            name=request.form.get('name'),
-            flow=request.form.get(json.loads(('txt_json')))
-        )
-        sc.save()
-        flash("Scene added.")
-    except Exception as e:
-        flash("Could not add scene:"+str(e))
-    finally:
-        return redirect(url_for(request.args.get('redirect_to')))
+    if current_user.user_type!='admin':
+        return redirect(url_for('index'))
+    sc = Scene(
+        name=request.form.get('name'),
+        flow=json.loads(request.form.get('txt_json'))
+    )
+    sc.save()
+    flash("Scene added.")
+    return redirect(url_for(request.args.get('redirect_to')))
 
-@app.route("/admin/scene_delete", methods=['POST'])
+@app.route("/admin/scene_delete", methods=['GET'])
 @login_required
 def scene_delete():
     if current_user.user_type!='admin':
@@ -283,10 +280,18 @@ def pair_headset():
         flash('Pairing code expired or invalid.')
     return redirect(request.referrer)
 
+@app.route('/errors', methods=['GET','POST'])
+def chk():
+    raise InternalServerError
+
 @app.before_request
 def before_request():
     if current_user.is_authenticated:
         current_user.update(lastActivity=datetime.utcnow())
+
+@app.template_filter()
+def format_json(value):
+    return json.dumps(value, sort_keys = True, indent = 4, separators = (',', ': '))
 
 @app.template_filter()
 def format_datetime(value):

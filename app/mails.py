@@ -47,7 +47,6 @@ def notifyError(e, tr, loggedInAs, ip, ua):
             'e': e,
             'tr': tr,
             'from_url': request.url,
-            'req_date': str(request.date),
             'utc_date': str(datetime.utcnow()),
             'headers': str(request.headers),
             'loggedInAs': loggedInAs,
