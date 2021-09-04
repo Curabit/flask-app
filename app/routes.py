@@ -3,10 +3,11 @@ from app import app
 from flask import url_for, redirect, render_template, flash, request, jsonify
 from werkzeug.urls import url_parse
 from app.forms import formForgotPassword, formLogin, formRegisterTherapist, formResetPassword
-from app.models import User, Client, testJSON, apiObj
+from app.models import User, Client, testJSON, apiObj, Scene
 from app.api import add_code, get_id, get_user_status
 from flask_login import current_user, login_user, logout_user, login_required
 import datetime as dt
+import json
 from datetime import datetime
 
 @app.route('/robots.txt', methods=['GET'])
@@ -130,7 +131,8 @@ def logout():
 @login_required
 def admin_db():
     th_list = User.objects(user_type='therapist')
-    return render_template('admin_db.html', ths=th_list)
+    sc_list = Scene.objects()
+    return render_template('admin_db.html', ths=th_list, scs=sc_list)
 
 @app.route('/admin/reset_link', methods=['GET'])
 @login_required
@@ -185,6 +187,33 @@ def admin_delete():
         flash("You cannot afford to delete therapists right now. Scale up, then we'll talk.")
     return redirect(url_for(request.args.get('redirect_to')))
 
+@app.route('/admin/add_scene', methods=['POST'])
+@login_required
+def add_scene():
+    try:
+        if current_user.user_type!='admin':
+            return redirect(url_for('index'))
+        sc = Scene(
+            name=request.form.get('name'),
+            flow=request.form.get(json.loads(('txt_json')))
+        )
+        sc.save()
+        flash("Scene added.")
+    except Exception as e:
+        flash("Could not add scene:"+str(e))
+    finally:
+        return redirect(url_for(request.args.get('redirect_to')))
+
+@app.route("/admin/scene_delete", methods=['POST'])
+@login_required
+def scene_delete():
+    if current_user.user_type!='admin':
+        return redirect(url_for('index'))
+    sc_id = request.args.get('sc_id')
+    sc = Scene.objects(pk=sc_id).first()
+    sc.delete()
+    flash("Scene has been deleted.")
+    return redirect(url_for(request.args.get('redirect_to')))
 
 @app.route('/therapist', methods=['GET', 'POST'])
 @login_required
@@ -205,7 +234,7 @@ def add_client():
     flash('Client added successfully.')
     return redirect(url_for('therapist_db'))
 
-@app.route("/api/json", methods=["PUT"])
+@app.route("/api/json", methods=["GET", "POST"])
 def serve_json():
     if request.method=="POST":
         test_obj = testJSON.objects().first()
