@@ -121,22 +121,26 @@
                             </div>    
                         </div>
                         <div class="collapsible">
-                            <div class="detail">
+                            <div class="detail" style="margin: 10px 0px;">
                                 <label>JSON Details</label>
-                                <p>{{ str(sc.flow) }}</p>
+                                <p>{{ sc.flow|format_json }}</p>
                             </div>
-                                <a class='btn red-btn-dark' href="{{ url_for('admin_delete', sc_id=sc._id, redirect_to='admin_db') }}">Delete</a>
+                            <div class="buttons-detail" style="margin: 10px -2.5px;">
+                                <a class='btn red-btn-dark' href="{{ url_for('scene_delete', sc_id=sc._id, redirect_to='admin_db') }}">Delete</a>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
+                    <button onclick='modal_load("addScene")' class='btn blue-btn-light' style="margin: 5px 0px;">Add a scene</button>
                 {% endif %}
+                
+            </div>
             </div>
             <div class='modal' id='addScene'>
                 <div class='modal-window'>
                     <div class='divided-row'>
                         <div class='row-side-container'>
-                            <h2>Add New Client</h2>
+                            <h2>Add Scene</h2>
                         </div>
                         <div class='row-side-container'>
                             <button class='btn blue-btn-light close-btn' style='margin: 0px;'><i class='fas fa-times'></i></button>

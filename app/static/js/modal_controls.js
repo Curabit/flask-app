@@ -24,3 +24,14 @@ function modal_load(modalname){
         }
       } 
 }
+
+var client = "0";
+
+function selectClient(cl_id){
+    client = cl_id;
+    modal_load('startSession');
+}
+
+function startSession(send_to, scene_id){
+    window.location = send_to + "?cl_id=" + client + "&sc_id=" + scene_id;
+}
