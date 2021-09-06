@@ -122,11 +122,8 @@
                             </div>    
                         </div>
                         <div class="collapsible">
-                            <div class="detail" style="margin: 10px 0px;">
-                                <label>JSON Details</label>
-                                <p>{{ sc.flow|format_json }}</p>
-                            </div>
-                            <div class="buttons-detail" style="margin: 10px -2.5px;">
+                            <div class="buttons-detail" style="margin: 10px 0px;">
+                                <a class='btn blue-btn-dark' style="margin: 5px 0px;" href="{{ url_for('scene_dwn', sc_id=sc._id, redirect_to='admin_db') }}">Download JSON</a>
                                 <a class='btn red-btn-dark' href="{{ url_for('scene_delete', sc_id=sc._id, redirect_to='admin_db') }}">Delete</a>
                             </div>
                         </div>
@@ -147,7 +144,7 @@
                             <button class='btn blue-btn-light close-btn' style='margin: 0px;'><i class='fas fa-times'></i></button>
                         </div>
                     </div>
-                    <form action='{{ url_for("add_scene", redirect_to="admin_db") }}' method='POST'>
+                    <form action='{{ url_for("add_scene", redirect_to="admin_db") }}' enctype="multipart/form-data" method='POST'>
                         
                         <div class='field-container'>
                             <label for='name'>Scene Name</label>
@@ -161,7 +158,7 @@
 
                         <div class='field-container'>
                             <label for='txt_json'>JSON Structure</label>
-                            <textarea id='txt_json' name='txt_json' placeholder="Enter JSON Structure"></textarea>
+                            <input type="file" id="json_file" name="json_file">
                         </div>
     
                         <button type='submit' class='btn blue-btn-dark' style='font-size: 14px;'>Add Scene</button>

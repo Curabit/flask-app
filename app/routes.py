@@ -1,6 +1,6 @@
 from app.mails import ackSignUp, approvedSignUp, notifySignUp
 from app import app
-from flask import url_for, redirect, render_template, flash, request, jsonify
+from flask import url_for, redirect, render_template, flash, request, jsonify, Response
 from werkzeug.urls import url_parse
 from app.forms import formForgotPassword, formLogin, formRegisterTherapist, formResetPassword
 from app.models import Session, User, Client, testJSON, apiObj, Scene
@@ -193,14 +193,35 @@ def admin_delete():
 def add_scene():
     if current_user.user_type!='admin':
         return redirect(url_for('index'))
+    _json=request.files['json_file']
+    _json = json.load(_json)
+    print(_json)
     sc = Scene(
         name=request.form.get('name'),
-        flow=json.loads(request.form.get('txt_json'))
+        videos=_json['videos'],
+        flow=_json['flow']
     )
     sc.save()
     print("Scene created: "+sc._id)
     flash("Scene added.")
     return redirect(url_for(request.args.get('redirect_to')))
+
+@app.route('/admin/scene/download', methods=['GET'])
+@login_required
+def scene_dwn():
+    if current_user.user_type!='admin':
+        return redirect(url_for('index'))
+    sc = Scene.objects(pk=request.args.get('sc_id')).first()
+    if sc is None:
+        flash('Scene not found.')
+        return redirect(url_for(request.args.get('redirect_to')))
+    else:
+        _json = dict()
+        _json['videos'] = sc.videos
+        _json['flow'] = sc.flow
+        return Response(json.dumps(_json, indent=4), 
+            mimetype='application/json',
+            headers={'Content-Disposition':'attachment;filename='+sc.name+'.json'})
 
 @app.route("/admin/scene_delete", methods=['GET'])
 @login_required
