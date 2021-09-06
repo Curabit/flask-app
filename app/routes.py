@@ -198,6 +198,7 @@ def add_scene():
         flow=json.loads(request.form.get('txt_json'))
     )
     sc.save()
+    print("Scene created: "+sc._id)
     flash("Scene added.")
     return redirect(url_for(request.args.get('redirect_to')))
 
@@ -211,6 +212,21 @@ def scene_delete():
     sc.delete()
     flash("Scene has been deleted.")
     return redirect(url_for(request.args.get('redirect_to')))
+
+@app.route("/admin/unlink_headset", methods=['GET', 'POST'])
+@login_required
+def unlink_headset():
+    if current_user.user_type!='admin':
+        return redirect(url_for('index'))
+    th = User.objects(pk=request.args.get('th_id')).first()
+    if th is None:
+        flash('Therapist could not be found.')
+    else:
+        th.update(hcode="Not set")
+        flash(th.name+"'s headset has been unlinked.")
+    return redirect(url_for(request.args.get('redirect_to')))
+    
+    
 
 @app.route('/therapist', methods=['GET', 'POST'])
 @login_required
@@ -232,7 +248,7 @@ def add_client():
     flash('Client added successfully.')
     return redirect(url_for('therapist_db'))
 
-@app.route('/therapist/startSession', methods=['GET'])
+@app.route('/session/start', methods=['GET'])
 @login_required
 def start_session():
     sesh = Session(
@@ -246,10 +262,21 @@ def start_session():
             'status': sesh._id
         }
     )
-    #TODO: Session has been created here. Now, what?
-    return "Running Session: "+str(sesh._id)
+    return redirect(url_for('play_session', sesh_id=sesh._id))
 
-@app.route('/therapist/stopSession', methods=['GET'])
+@app.route('/session/<sesh_id>', methods=['GET'])
+@login_required
+def play_session(sesh_id):
+    sesh = Session.objects(_id=sesh_id).first()
+    if current_user._id!=sesh.th_id:
+        flash("You cannot access this session.")
+        redirect(url_for('therapist_db'))
+    cl = Client.objects(pk=sesh.cl_id).first()
+    sc = Scene.objects(pk=sesh.sc_id).first()
+    return render_template('session.html', sesh=sesh, sc=sc, cl=cl)
+    
+
+@app.route('/session/stop', methods=['GET'])
 @login_required
 def stop_session():
     sesh = Session.objects(current_user.session['status']).first()
@@ -261,7 +288,6 @@ def stop_session():
             'status': 'on-standby'
         }
     )
-
 
 @app.route("/api/json", methods=["GET", "POST"])
 def serve_json():

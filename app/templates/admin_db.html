@@ -92,6 +92,7 @@
                                 {% else %}
                                     <a class='btn green-btn-dark' href="{{ url_for('admin_approve', user_id=th._id, redirect_to='admin_db') }}">Approve Verification</a>
                                 {% endif %}
+                                <a class='btn blue-btn-dark' href="{{ url_for('unlink_headset', th_id=th._id, redirect_to='admin_db') }}">Unlink Headset</a>
                                 <a class='btn red-btn-dark' href="{{ url_for('admin_delete', user_id=th._id, redirect_to='admin_db') }}">Delete</a>
                             </div>
                         </div>
