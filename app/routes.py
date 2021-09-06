@@ -198,6 +198,7 @@ def add_scene():
         flow=json.loads(request.form.get('txt_json'))
     )
     sc.save()
+    print("Scene created: "+sc._id)
     flash("Scene added.")
     return redirect(url_for(request.args.get('redirect_to')))
 
@@ -211,6 +212,21 @@ def scene_delete():
     sc.delete()
     flash("Scene has been deleted.")
     return redirect(url_for(request.args.get('redirect_to')))
+
+@app.route("/admin/unlink_headset", methods=['GET', 'POST'])
+@login_required
+def unlink_headset():
+    if current_user.user_type!='admin':
+        return redirect(url_for('index'))
+    th = User.objects(pk=request.args.get('th_id')).first()
+    if th is None:
+        flash('Therapist could not be found.')
+    else:
+        th.update(hcode="Not set")
+        flash(th.name+"'s headset has been unlinked.")
+    return redirect(url_for(request.args.get('redirect_to')))
+    
+    
 
 @app.route('/therapist', methods=['GET', 'POST'])
 @login_required
