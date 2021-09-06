@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <meta charset='UTF-8'>
+        <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+        <meta http-equiv='Content-Style-Type' content='text/css'>
+        <meta name='viewport' content='width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0'>
+
+        <title>Session In Progress | Console by Curabit</title>
+        <link rel='shortcut icon' type='image/ico' href='{{ url_for("static",filename="assets/favicon.png") }}' />
+
+        <link rel='preconnect' href='https://fonts.googleapis.com' />
+        <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
+        <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.15.4/css/all.css' integrity='sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm' crossorigin='anonymous'>
+        <link href='https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap' rel='stylesheet'> 
+
+        <link href='{{ url_for("static",filename="css/session.css") }}' rel='stylesheet' type='text/css' />
+        <script src='{{ url_for("static",filename="js/session.js") }}'></script>
+    </head>
+    <body>
+        <header>
+            <h2 style='background-color: #FABFCD'>{{ current_user.name }}</h2>
+            <h2 style='background-color: #FFE8B3'>{{ sc.name }}</h2>
+            <h2 style='background-color: #A3F1DD'>{{ cl.name }}</h2>
+        </header>
+        <div class='centered-flexbox' id='video-stream' style='flex: 1 1 auto;'>
+            <b>Current Video: </b><p>curr-video.mp4</p><br>
+        </div>
+        <div class='centered-flexbox' id='choice-prompt' style='width: 100%;'>
+            <h2 id='prompt'>This is a question.</h2>
+            <div id='choices'>
+                <button class='choice-btn'>Choice</button>
+                <button class='choice-btn'>Choice</button>
+                <button class='choice-btn'>Choice</button>
+            </div>
+        </div>
+        <div id='playback-controls'>
+            <button class='playback-btn btn-red'><i class='fas fa-stop'></i></button>
+            <button class='playback-btn btn-blue'><i class='fas fa-play'></i></button>
+            <button class='playback-btn btn-blue'><i class='fas fa-pause'></i></button>
+        </div>
+    </body>
+</html>
