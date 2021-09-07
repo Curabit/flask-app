@@ -195,14 +195,12 @@ def add_scene():
         return redirect(url_for('index'))
     _json=request.files['json_file']
     _json = json.load(_json)
-    print(_json)
     sc = Scene(
         name=request.form.get('name'),
         videos=_json['videos'],
         flow=_json['flow']
     )
     sc.save()
-    print("Scene created: "+sc._id)
     flash("Scene added.")
     return redirect(url_for(request.args.get('redirect_to')))
 
@@ -252,6 +250,8 @@ def unlink_headset():
 @app.route('/therapist', methods=['GET', 'POST'])
 @login_required
 def therapist_db():
+    if current_user.session['status']!='on-standby':
+        return redirect(url_for('play_session'))
     cls = Client.objects(th_id=current_user._id)
     scs = Scene.objects()
     return render_template('therapist_db.html', cls=cls, scs=scs)
@@ -272,10 +272,27 @@ def add_client():
 @app.route('/session/start', methods=['GET'])
 @login_required
 def start_session():
+    sc = Scene.objects(pk=request.args.get('sc_id')).first()
+    _json = dict()
+    _json['videos'] = sc.videos
+    _json['isStop'] = False
+    _json['isPaused'] = False
+    _json["current"] = dict()
+    _json["current"]["file-name"] = sc.flow['fname']
+    _json["current"]["isLooped"] = sc.flow['isLooped']
+    _json["next"] = []
+    if (sc.flow['isBranched']):
+        for item in sc.flow['branches']:
+            temp = dict()
+            temp['file-name'] = item['fname']
+            temp['isOnLoop'] = item['isLooped']
+            _json['next'].append(temp)
+    _json["previous"] = dict()
     sesh = Session(
         th_id = current_user._id,
         cl_id = request.args.get('cl_id'),
-        sc_id = request.args.get('sc_id')
+        sc_id = sc._id,
+        info_unity = _json
     )
     sesh.save()
     current_user.update(
@@ -283,32 +300,44 @@ def start_session():
             'status': sesh._id
         }
     )
-    return redirect(url_for('play_session', sesh_id=sesh._id))
+    return redirect(url_for('play_session'))
 
-@app.route('/session/<sesh_id>', methods=['GET'])
+@app.route('/session', methods=['GET'])
 @login_required
-def play_session(sesh_id):
-    sesh = Session.objects(_id=sesh_id).first()
-    if current_user._id!=sesh.th_id:
-        flash("You cannot access this session.")
-        redirect(url_for('therapist_db'))
+def play_session():
+    if current_user.session['status'] == 'on-standby':
+        return redirect(url_for('index'))
+    else:
+        sesh = Session.objects(_id=current_user.session['status']).first()
     cl = Client.objects(pk=sesh.cl_id).first()
     sc = Scene.objects(pk=sesh.sc_id).first()
     return render_template('session.html', sesh=sesh, sc=sc, cl=cl)
-    
+
+@app.route('/session/info/<sesh_id>', methods=['GET'])
+def get_session_info(sesh_id):
+    sesh = Session.objects(pk=sesh_id).first()
+    if sesh is None:
+        return jsonify({
+            "error": "Session not found."
+        }), 400
+    return jsonify(sesh.info_unity), 200
 
 @app.route('/session/stop', methods=['GET'])
 @login_required
 def stop_session():
-    sesh = Session.objects(current_user.session['status']).first()
+    sesh = Session.objects(_id=current_user.session['status']).first()
+    info_unity = sesh.info_unity
+    info_unity['isStop'] = True
     sesh.update(
-        endAt = datetime.utcnow()
+        endAt = datetime.utcnow(),
+        info_unity = info_unity
     )
     current_user.update(
         session = {
             'status': 'on-standby'
         }
     )
+    return redirect(url_for('therapist_db'))
 
 @app.route("/api/json", methods=["GET", "POST"])
 def serve_json():
