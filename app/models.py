@@ -99,6 +99,8 @@ class Session(db.Document):
     cl_id = db.StringField(required=True)
     sc_id = db.StringField(required=True)
     beganAt = db.DateTimeField(required=True, default=datetime.utcnow())
+    info_unity = db.DynamicField()
+    info_player = db.DynamicField()
     endAt = db.DateTimeField()
 
 class testJSON(db.DynamicDocument):
