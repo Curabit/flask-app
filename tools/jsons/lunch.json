@@ -1,7 +1,12 @@
 {
-    "name":"root",
-    "fname":"ZxlZcnqUyX",
-    "duration":"05:10",
-    "isLooped":false,
-    "isBranched":false
- }
+    "flow": {
+        "name": "root",
+        "fname": "ZxlZcnqUyX",
+        "duration": "05:10",
+        "isLooped": false,
+        "isBranched": false
+    },
+    "videos": [
+        "ZxlZcnqUyX"
+    ]
+}

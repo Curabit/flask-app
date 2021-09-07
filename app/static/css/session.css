@@ -110,6 +110,9 @@ header * {
     font-size: 72px;
     border: none;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .btn-red:hover{

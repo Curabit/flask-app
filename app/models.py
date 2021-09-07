@@ -89,6 +89,7 @@ class Scene(db.Document):
     default=''.join([random.choice(string.ascii_letters + string.digits) for n in range(16)]))
     name = db.StringField(required=True)
     flow = db.DynamicField(required=True)
+    videos = db.DynamicField(required=True)
 
 class Session(db.Document):
     meta = {"collections": "sessions"}
@@ -98,6 +99,8 @@ class Session(db.Document):
     cl_id = db.StringField(required=True)
     sc_id = db.StringField(required=True)
     beganAt = db.DateTimeField(required=True, default=datetime.utcnow())
+    endp_unity = db.DynamicField()
+    endp_web = db.DynamicField()
     endAt = db.DateTimeField()
 
 class testJSON(db.DynamicDocument):
