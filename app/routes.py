@@ -244,8 +244,7 @@ def unlink_headset():
         th.update(hcode="Not set")
         flash(th.name+"'s headset has been unlinked.")
     return redirect(url_for(request.args.get('redirect_to')))
-    
-    
+   
 
 @app.route('/therapist', methods=['GET', 'POST'])
 @login_required
@@ -279,7 +278,7 @@ def start_session():
     _json['isPaused'] = False
     _json["current"] = dict()
     _json["current"]["file-name"] = sc.flow['fname']
-    _json["current"]["isLooped"] = sc.flow['isLooped']
+    _json["current"]["isOnLoop"] = sc.flow['isLooped']
     _json["next"] = []
     if (sc.flow['isBranched']):
         for item in sc.flow['branches']:
@@ -292,7 +291,8 @@ def start_session():
         th_id = current_user._id,
         cl_id = request.args.get('cl_id'),
         sc_id = sc._id,
-        info_unity = _json
+        endp_unity = _json,
+        endp_web = sc.flow
     )
     sesh.save()
     current_user.update(
@@ -313,24 +313,78 @@ def play_session():
     sc = Scene.objects(pk=sesh.sc_id).first()
     return render_template('session.html', sesh=sesh, sc=sc, cl=cl)
 
-@app.route('/session/info/<sesh_id>', methods=['GET'])
-def get_session_info(sesh_id):
+@app.route('/session/info/<agent>/<sesh_id>', methods=['GET'])
+def get_session_info(agent, sesh_id):
     sesh = Session.objects(pk=sesh_id).first()
     if sesh is None:
         return jsonify({
             "error": "Session not found."
         }), 400
-    return jsonify(sesh.info_unity), 200
+    if agent=='unity':
+        return jsonify(sesh.endp_unity), 200
+    elif agent=='web':
+        return jsonify(sesh.endp_web), 200
 
+@app.route('/session/action', methods=['POST'])
+def sessionAction():
+    sesh = Session.objects(_id=current_user.session['status']).first()
+    req = request.json
+    endp_unity = sesh.endp_unity
+    if req['action'] == 'pause':
+        print("Pausing.")
+        endp_unity['isPaused'] = True
+        sesh.update(
+            endp_unity = endp_unity
+        )
+        return jsonify("OK"), 200
+    elif req['action'] == 'play':
+        print("Playing.")
+        endp_unity['isPaused'] = False
+        sesh.update(
+            endp_unity = endp_unity
+        )
+        return jsonify("OK"), 200
+        
+
+
+@app.route('/session/action/make_choice', methods=['POST'])
+def sessionMakeChoice():
+    sesh = Session.objects(_id=current_user.session['status']).first()
+    endp_unity = sesh.endp_unity
+    endp_web = sesh.endp_web
+    choice_index = request.json['choice_index']
+    endp_web = endp_web['branches'][choice_index]
+    endp_unity["previous"] = dict()
+    endp_unity['previous']["file-name"] = endp_unity['current']['fname']
+    endp_unity['previous']["isOnLoop"] = endp_unity['current']['isOnLoop']
+    endp_unity["current"]["file-name"] = endp_web['fname']
+    endp_unity["current"]["isOnLoop"] = endp_web['isLooped']
+    endp_unity["next"] = []
+    if (endp_web['isBranched']):
+        for item in endp_web['branches']:
+            temp = dict()
+            temp['file-name'] = item['fname']
+            temp['isOnLoop'] = item['isLooped']
+            endp_unity['next'].append(temp)
+    sesh.update(
+        endp_unity = endp_unity,
+        endp_web = endp_web
+    )
+
+    return jsonify(
+        {"resp": "OK"}
+        ), 200
+    
+  
 @app.route('/session/stop', methods=['GET'])
 @login_required
 def stop_session():
     sesh = Session.objects(_id=current_user.session['status']).first()
-    info_unity = sesh.info_unity
-    info_unity['isStop'] = True
+    endp_unity = sesh.endp_unity
+    endp_unity['isStop'] = True
     sesh.update(
         endAt = datetime.utcnow(),
-        info_unity = info_unity
+        endp_unity = endp_unity
     )
     current_user.update(
         session = {
