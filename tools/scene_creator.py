@@ -28,9 +28,9 @@ def get_scene_details(pre="", scene_name='root'):
         scene["prompt_timestamp"] = input("Enter timestamp to show prompt at (MM:SS): ")
         options = input("Enter the choices offered (split by |): ").split('|')
         scene["default_choice"] = input("Enter default option (in case of no selection): ")
-        scene["branches"] = dict()
+        scene["branches"] = list()
         for option in options:
-            scene["branches"][option] = get_scene_details(new_pre, option)
+            scene["branches"].append(get_scene_details(new_pre, option))
     return scene
 
 # json_object = json.dump(get_scene_details(), indent = 4)
@@ -44,8 +44,8 @@ while(True):
         break
 
 _json = {
-    "videos": videos,
-    "flow": get_scene_details()
+    "flow": get_scene_details(),
+    "videos": videos
 }
 
 with open((fname+".json"), "w") as outfile:
