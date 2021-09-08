@@ -95,7 +95,6 @@ def forgotPassword():
     form = formForgotPassword()
     if form.validate_on_submit():
         user = User.objects(email=form.email.data).first()
-        print("NAME: "+str(user.name))
         if user is None:
             flash('This email ID is not registered.')
             return redirect(url_for('forgotPassword'))
@@ -275,7 +274,7 @@ def start_session():
     _json = dict()
     _json['videos'] = sc.videos
     _json['isStop'] = False
-    _json['isPaused'] = False
+    _json['isPaused'] = True
     _json["current"] = dict()
     _json["current"]["file-name"] = sc.flow['fname']
     _json["current"]["isOnLoop"] = sc.flow['isLooped']
@@ -313,7 +312,13 @@ def play_session():
     sc = Scene.objects(pk=sesh.sc_id).first()
     return render_template('session.html', sesh=sesh, sc=sc, cl=cl)
 
-@app.route('/session/info/<agent>/<sesh_id>', methods=['GET'])
+@app.route('/session/get_id', methods=['POST'])
+def get_session_id():
+    x = current_user.session['status']
+    return jsonify(
+        {"session": x}), 200
+
+@app.route('/session/info/<agent>/<sesh_id>', methods=['GET', 'POST'])
 def get_session_info(agent, sesh_id):
     sesh = Session.objects(pk=sesh_id).first()
     if sesh is None:
@@ -331,14 +336,12 @@ def sessionAction():
     req = request.json
     endp_unity = sesh.endp_unity
     if req['action'] == 'pause':
-        print("Pausing.")
         endp_unity['isPaused'] = True
         sesh.update(
             endp_unity = endp_unity
         )
         return jsonify("OK"), 200
     elif req['action'] == 'play':
-        print("Playing.")
         endp_unity['isPaused'] = False
         sesh.update(
             endp_unity = endp_unity
@@ -352,10 +355,13 @@ def sessionMakeChoice():
     sesh = Session.objects(_id=current_user.session['status']).first()
     endp_unity = sesh.endp_unity
     endp_web = sesh.endp_web
-    choice_index = request.json['choice_index']
-    endp_web = endp_web['branches'][choice_index]
+    choice_name = request.json['choice_name']
+    for branch in endp_web['branches']:
+        if (branch['name']==choice_name):
+            endp_web = branch
+            break
     endp_unity["previous"] = dict()
-    endp_unity['previous']["file-name"] = endp_unity['current']['fname']
+    endp_unity['previous']["file-name"] = endp_unity['current']['file-name']
     endp_unity['previous']["isOnLoop"] = endp_unity['current']['isOnLoop']
     endp_unity["current"]["file-name"] = endp_web['fname']
     endp_unity["current"]["isOnLoop"] = endp_web['isLooped']
@@ -391,6 +397,7 @@ def stop_session():
             'status': 'on-standby'
         }
     )
+    flash("Session has ended.")
     return redirect(url_for('therapist_db'))
 
 @app.route("/api/json", methods=["GET", "POST"])
