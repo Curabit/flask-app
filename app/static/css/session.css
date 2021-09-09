@@ -31,6 +31,7 @@ body {
     color: #113048;
     background-color: #FCFCFC;
     font-family: 'Roboto Slab', serif;
+    z-index: 0;
 }
 
 .centered-flexbox {
@@ -55,6 +56,21 @@ header * {
     font-weight: 600;
     font-size: 18px;
     padding: 5px 0px;
+}
+
+#choice-prompt {
+    display: none;
+    z-index: 1;
+    width: 100%;
+    position: fixed;
+    /* Position Z-index JUGAAD */
+    top: calc(100vh - 177.333px);
+    left: 0;
+}
+
+#timer-container * {
+    display: inline;
+    vertical-align: center;
 }
 
 #prompt {

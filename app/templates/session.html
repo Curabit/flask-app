@@ -22,20 +22,18 @@
             <h2 style='background-color: #FFE8B3'>{{ sc.name }}</h2>
             <h2 style='background-color: #A3F1DD'>{{ cl.name }}</h2>
         </header>
-        <div class='centered-flexbox' id='video-stream' style='flex: 1 1 auto;'>
-            <b>Current Video: </b><p>curr-video.mp4</p><br>
+        <div class='centered-flexbox' id='video-stream' style='flex: 1 1 auto; z-index: 0;'>
+            <b>Current Video </b><p id='current-video-name'></p>
+            <!-- <b>Video Timestamp </b><span id="timer-container"><p id='video-timestamp'>00:00</p><p>/</p><p id='video-duration'>00:00</p></span><br> -->
         </div>
-        <div class='centered-flexbox' id='choice-prompt' style='width: 100%;'>
+        <div class='centered-flexbox' id='choice-prompt' style='z-index: 1; width: 100%;'>
             <h2 id='prompt'>This is a question.</h2>
             <div id='choices'>
-                <button class='choice-btn'>Choice</button>
-                <button class='choice-btn'>Choice</button>
-                <button class='choice-btn'>Choice</button>
             </div>
         </div>
         <div id='playback-controls'>
-            <a class='playback-btn btn-red' href="{{ url_for('stop_session') }}"><i class='fas fa-stop'></i></a>
-            <button class='playback-btn btn-blue' onclick='doPausePlay(this)'><i class='fas fa-pause'></i></button>
+            <a id='stop-btn' class='playback-btn btn-red' href="{{ url_for('stop_session') }}"><i class='fas fa-stop'></i></a>
+            <button class='playback-btn btn-blue' onclick='doPausePlay(this)' id='pause-play-btn'><i class='fas fa-play'></i></button>
         </div>
     </body>
 </html>
