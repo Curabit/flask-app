@@ -6,22 +6,29 @@ let pauseTime = true;
 let choiceMade = false;
 let timestamp;
 
+
+// Stopwatch Functions
 function startStopwatch(){
+    console.info("Starting Stopwatch.");
     if (pauseTime == true){
+        console.info("Changing pauseTime to false.");
         pauseTime = false;
         cycleTimer();
     }
 }
 
 function resetStopwatch(){
+    console.info("Resetting Stopwatch");
     timestamp.innerHTML = "00:00";
-    pauseTime = false;
+    pauseTime = true;
     min = 0;
     sec = 0;
 }
 
 function cycleTimer(){
+    console.info("Inside cycleTimer.");
     if (pauseTime == false){
+        console.info("pauseTime is True.");
         sec = parseInt(sec);
         min = parseInt(min);
         
@@ -50,7 +57,9 @@ function cycleTimer(){
     }
 }
 
+// Pause-Play Mechanism
 function doPausePlay(btn){
+    
     icon = btn.firstChild;
     if (icon.classList.contains("fa-pause")){
         console.log("Pausing now.");
@@ -71,12 +80,14 @@ function doPausePlay(btn){
     icon.classList.toggle("fa-pause");
 }
 
+// Session ID retreival
 function getSeshId() {
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             let myArr = JSON.parse(this.responseText);
             seshId = myArr.session;
+            console.info("Retreived Session ID. Now getting info.");
             get_info();
         }
     };
@@ -84,36 +95,76 @@ function getSeshId() {
     xmlhttp.send();
 }
 
-function startScene(){
+// Info retreival
+function get_info(){
+
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            info = JSON.parse(this.responseText);
+            console.info("Got info. Now loading Scene.");
+            loadScene();
+            btn = document.getElementById('pause-play-btn');
+            console.info("Clicking on play button.");
+            doPausePlay(btn);
+        }
+    };
+    xmlhttp.open("POST", "/session/info/web/"+seshId);
+    xmlhttp.send();
+}
+
+
+function loadScene(){
+
+    // reset scene
+    console.info("Resetting Scene.");
     document.getElementById("choice-prompt").style.display = "none";
     ch = document.querySelector("#choices");
     while (ch.hasChildNodes()){
         ch.removeChild(ch.firstChild);
     }
+    resetStopwatch();
+    
+    //load scene details
+    console.info("Loading Scene.");
     current_video = document.getElementById("current-video-name");
     current_video.innerHTML = info["fname"];
     document.getElementById("video-duration").innerHTML = info["duration"];
-    btn = document.getElementById("pause-play-btn");
     dur_min = parseInt(info["duration"].substr(0,2));
     dur_sec = parseInt(info["duration"].substr(3,2));
+
+    
+    if (pauseTime==true){
+        startStopwatch();
+    }
+
+    // if scene does not branch
     if (info["isBranched"] == false){
-        total_dur = (((dur_min*60)+dur_sec)*1000)+3000;    
+        console.info("Scene does not branch.");
+        total_dur = (((dur_min*60)+dur_sec)*1000)+2700;    
         setTimeout(function(){
             document.getElementById("stop-btn").click();
         },total_dur);
-    } else {
+    } 
+    
+    // if scene branches
+    else {
+        console.info("Scene branches.");
         default_choice = info["default_choice"];
-        total_dur = (((dur_min*60)+dur_sec)*1000);
+        total_dur = (((dur_min*60)+dur_sec)*900);
         temp_min = parseInt(info["prompt_timestamp"].substr(0,2));
         temp_sec = parseInt(info["prompt_timestamp"].substr(03,2));
-        temp_dur = (((temp_min*60)+temp_sec)*1000);
+        temp_dur = (((temp_min*60)+temp_sec)*900);
         setTimeout(function(){
             doBranching(total_dur-temp_dur);
         },temp_dur);
     }
+
+    
 }
 
 function doBranching(timer){
+    console.info("Doing branching mechanism.");
     box = document.getElementById("choice-prompt");
     box.style.display = "flex";
     box.querySelector("#prompt").innerHTML = info["prompt_question"];
@@ -132,7 +183,6 @@ function doBranching(timer){
     }, timer);
 }
 
-
 function makeChoice(choice){
     choiceMade = true;
     console.log("Choice: "+choice);
@@ -146,31 +196,8 @@ function makeChoice(choice){
             break;
         }
     }
-    resetStopwatch();
-    startScene();
+    loadScene();
 }
-
-function get_info(){
-    let xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            info = JSON.parse(this.responseText);
-            startScene();
-            doPausePlay(btn);
-        }
-    };
-    xmlhttp.open("POST", "/session/info/web/"+seshId);
-    xmlhttp.send();
-}
-
-function get_obj(){
-    let xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", "/session/action");
-    xmlhttp.setRequestHeader("Content-Type", "application/json");
-    xmlhttp.send(JSON.stringify({action: "pause"}));
-}
-
-
 
 document.addEventListener("DOMContentLoaded", (event) => {
     timestamp = document.getElementById("video-timestamp");
