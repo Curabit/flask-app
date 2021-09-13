@@ -278,8 +278,9 @@ def start_session():
     _json["current"] = dict()
     _json["current"]["file-name"] = sc.flow['fname']
     _json["current"]["isOnLoop"] = sc.flow['isLooped']
-    _json["next"] = []
+    _json["next"] = None
     if (sc.flow['isBranched']):
+        _json["next"] = []
         for item in sc.flow['branches']:
             temp = dict()
             temp['file-name'] = item['fname']
@@ -348,7 +349,7 @@ def sessionAction():
         )
         return jsonify("OK"), 200
         
-
+# Test Line
 
 @app.route('/session/action/make_choice', methods=['POST'])
 def sessionMakeChoice():
@@ -365,8 +366,9 @@ def sessionMakeChoice():
     endp_unity['previous']["isOnLoop"] = endp_unity['current']['isOnLoop']
     endp_unity["current"]["file-name"] = endp_web['fname']
     endp_unity["current"]["isOnLoop"] = endp_web['isLooped']
-    endp_unity["next"] = []
-    if (endp_web['isBranched']):
+    endp_unity["next"] = None
+    if (endp_web.flow['isBranched']):
+        endp_unity["next"] = []
         for item in endp_web['branches']:
             temp = dict()
             temp['file-name'] = item['fname']
